@@ -171,20 +171,19 @@ main{position:relative;z-index:5;padding:20px 14px 80px;max-width:1700px;margin:
 .leg-q{background:#00D25A}.leg-p{background:#FF9B00}.leg-e{background:#DC3232}
 /* ── REFRESH ANIMATION ── */
 /* ── REFRESH OVERLAY ── */
-.ref-overlay{display:none;position:fixed;inset:0;background:rgba(5,8,28,.88);backdrop-filter:blur(28px);z-index:4000;flex-direction:column;align-items:center;justify-content:center;gap:0}
-.ref-overlay.on{display:flex}
-@keyframes trophy-float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-18px) scale(1.04)}}
-@keyframes trophy-glow{0%,100%{filter:drop-shadow(0 0 18px rgba(200,168,75,.4)) drop-shadow(0 0 40px rgba(200,168,75,.15))}50%{filter:drop-shadow(0 0 40px rgba(200,168,75,.9)) drop-shadow(0 0 80px rgba(200,168,75,.4))}}
-@keyframes ring-pulse{0%{transform:scale(.8);opacity:.7}100%{transform:scale(2.2);opacity:0}}
-@keyframes bar-sweep{0%{width:0%}100%{width:100%}}
-.ref-trophy-wrap{position:relative;width:180px;height:220px;display:flex;align-items:center;justify-content:center;margin-bottom:32px}
-.ref-trophy-img{width:150px;height:auto;animation:trophy-float 2s ease-in-out infinite,trophy-glow 2s ease-in-out infinite;position:relative;z-index:2}
-.ref-ring{position:absolute;width:120px;height:120px;border-radius:50%;border:2px solid rgba(200,168,75,.5);top:50%;left:50%;margin:-60px 0 0 -60px;animation:ring-pulse 1.8s ease-out infinite}
-.ref-ring:nth-child(2){animation-delay:.6s}
-.ref-ring:nth-child(3){animation-delay:1.2s}
-.ref-label{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:5px;color:rgba(200,168,75,.7);margin-bottom:24px}
-.ref-bar-bg{width:200px;height:3px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden}
-.ref-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--fr-blue),var(--gold),var(--fr-red));border-radius:10px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.ref-overlay{display:none;position:fixed;inset:0;background:rgba(5,8,28,0);z-index:4000;pointer-events:none;transition:background .5s}
+.ref-overlay.on{display:block;pointer-events:all}
+.ref-overlay.on.dark{background:rgba(5,8,28,.82)}
+/* Trophée volant */
+#ref-flying-trophy{position:fixed;z-index:4001;pointer-events:none;transition:none;transform-origin:center center}
+@keyframes ref-spin{0%{transform:rotate(-6deg) scale(1)}25%{transform:rotate(6deg) scale(1.03)}50%{transform:rotate(-4deg) scale(1)}75%{transform:rotate(5deg) scale(1.02)}100%{transform:rotate(-6deg) scale(1)}}
+@keyframes ref-glow{0%,100%{filter:drop-shadow(0 0 30px rgba(200,168,75,.5)) drop-shadow(0 0 60px rgba(200,168,75,.2))}50%{filter:drop-shadow(0 0 60px rgba(200,168,75,1)) drop-shadow(0 0 120px rgba(200,168,75,.5))}}
+@keyframes ref-ring{0%{transform:translate(-50%,-50%) scale(.5);opacity:.9}100%{transform:translate(-50%,-50%) scale(3);opacity:0}}
+.ref-ring-el{position:fixed;border-radius:50%;border:2px solid rgba(200,168,75,.6);z-index:4000;pointer-events:none;animation:ref-ring 2s ease-out infinite}
+/* Label et barre */
+.ref-label{position:fixed;left:50%;transform:translateX(-50%);font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:5px;color:rgba(200,168,75,.8);z-index:4002;opacity:0;transition:opacity .5s;white-space:nowrap}
+.ref-bar-bg{position:fixed;left:50%;transform:translateX(-50%);width:200px;height:3px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden;z-index:4002;opacity:0;transition:opacity .5s}
+.ref-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--fr-blue),var(--gold),var(--fr-red));border-radius:10px}
 ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:rgba(255,255,255,.02)}
 ::-webkit-scrollbar-thumb{background:rgba(200,168,75,.3);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:rgba(200,168,75,.5)}
 @media(max-width:768px){.groups-grid{grid-template-columns:1fr}.nb{padding:11px 12px;font-size:14px;letter-spacing:1px}.mc-flag{font-size:34px}.mc-name{font-size:16px}.sc-num{font-size:40px}}
@@ -359,16 +358,7 @@ main{position:relative;z-index:5;padding:20px 14px 80px;max-width:1700px;margin:
 <div id="confetti"></div>
 
 <!-- Refresh animation overlay -->
-<div class="ref-overlay" id="ref-overlay">
-  <div class="ref-trophy-wrap">
-    <div class="ref-ring"></div>
-    <div class="ref-ring"></div>
-    <div class="ref-ring"></div>
-    <img class="ref-trophy-img" src="trophy.png" alt="FIFA World Cup Trophy">
-  </div>
-  <div class="ref-label">MISE À JOUR EN COURS</div>
-  <div class="ref-bar-bg"><div class="ref-bar-fill" id="ref-bar"></div></div>
-</div>
+<div class="ref-overlay" id="ref-overlay"></div>
 
 <script>
 // ════════════════════════════════════════════════════════
@@ -991,52 +981,137 @@ function buildTeamMatchMap(){
 
 function refreshAll(){
   const overlay=document.getElementById('ref-overlay');
-  const bar=document.getElementById('ref-bar');
-  bar.style.transition='none';
-  bar.style.width='0%';
+  const srcTrophy=document.querySelector('.h-trophy');
+  if(!srcTrophy||overlay._running)return;
+  overlay._running=true;
+
+  // ── 1. Position de départ du trophée dans le header ──
+  const r=srcTrophy.getBoundingClientRect();
+  const startX=r.left, startY=r.top, startW=r.width;
+  const vw=document.documentElement.clientWidth||window.outerWidth||screen.width||1280;
+  const vh=document.documentElement.clientHeight||window.outerHeight||screen.height||800;
+  const destX=vw/2, destY=vh/2;
+  const destW=Math.min(220, vw*0.45);
+
+  // ── 2. Clone volant ──
+  srcTrophy.style.opacity='0';
+  const fly=document.createElement('img');
+  fly.src='trophy.png';
+  fly.id='ref-flying-trophy';
+  fly.style.cssText=`width:${startW}px;top:${startY}px;left:${startX}px;`;
+  document.body.appendChild(fly);
+
+  // ── 3. Fond sombre + label + barre ──
   overlay.classList.add('on');
-  // Barre de progression animée en continu pendant le fetch
-  setTimeout(()=>{bar.style.transition='width 2.8s cubic-bezier(.4,0,.6,1)';bar.style.width='85%';},30);
+  const label=document.createElement('div');
+  label.className='ref-label';
+  label.textContent='MISE À JOUR EN COURS';
+  label.style.top=(destY+destW*0.55+16)+'px';
+  overlay.appendChild(label);
 
+  const barBg=document.createElement('div');
+  barBg.className='ref-bar-bg';
+  barBg.style.top=(destY+destW*0.55+44)+'px';
+  const barFill=document.createElement('div');
+  barFill.className='ref-bar-fill';
+  barBg.appendChild(barFill);
+  overlay.appendChild(barBg);
+
+  // ── 4. Anneaux pulsants centrés ──
+  const rings=[];
+  [0,.7,1.4].forEach((delay,i)=>{
+    const ring=document.createElement('div');
+    ring.className='ref-ring-el';
+    const sz=destW*0.7;
+    ring.style.cssText=`width:${sz}px;height:${sz}px;left:${destX}px;top:${destY}px;animation-delay:${delay}s`;
+    document.body.appendChild(ring);
+    rings.push(ring);
+  });
+
+  // ── 5. Vol vers le centre — double rAF pour forcer le commit de la position initiale ──
+  requestAnimationFrame(()=>{requestAnimationFrame(()=>{
+    fly.style.transition='top .8s cubic-bezier(.4,0,.2,1),left .8s cubic-bezier(.4,0,.2,1),width .8s cubic-bezier(.4,0,.2,1)';
+    fly.style.top=(destY-destW/2)+'px';
+    fly.style.left=(destX-destW/2)+'px';
+    fly.style.width=destW+'px';
+  });});
+
+  // ── 6. Assombrir fond + afficher label/barre après le vol ──
+  setTimeout(()=>{
+    overlay.classList.add('dark');
+    label.style.opacity='1';
+    barBg.style.opacity='1';
+    // Animation trophée sur place
+    fly.style.transition='none';
+    fly.style.animation='ref-spin 2.2s ease-in-out infinite, ref-glow 2s ease-in-out infinite';
+    // Barre progresse sur ~4s
+    barFill.style.transition='width 4s cubic-bezier(.4,0,.6,1)';
+    barFill.style.width='85%';
+  },750);
+
+  // ── 7. Appel API ──
   const apiUrl=window.location.hostname==='localhost'||window.location.hostname==='127.0.0.1'
-    ?'https://cdm-2026-bleus.vercel.app/api/scores'
-    :'/api/scores';
+    ?'https://cdm-2026-bleus.vercel.app/api/scores':'/api/scores';
 
-  fetch(apiUrl)
-    .then(r=>r.json())
-    .then(data=>{
-      const newKeys=[];
-      if(data.ok&&data.matches){
-        const tmMap=buildTeamMatchMap();
-        data.matches.forEach(m=>{
-          if(!m.finished||m.homeScore===null)return;
-          const h=ESPN_MAP[m.homeTeam]||m.homeTeam;
-          const a=ESPN_MAP[m.awayTeam]||m.awayTeam;
-          const entry=tmMap[h]?.[a];
-          if(!entry)return;
-          const {key,swapped}=entry;
-          const hs=swapped?m.awayScore:m.homeScore;
-          const as_=swapped?m.homeScore:m.awayScore;
-          const existing=scores[key];
-          if(!existing||existing.home!==hs||existing.away!==as_){
-            scores[key]={home:hs,away:as_};
-            newKeys.push(key);
-          }
-        });
-        saveScores();
-      }
-      bar.style.transition='width .4s ease';bar.style.width='100%';
+  let apiDone=false, newKeys=[], apiError=false;
+  const START=Date.now();
+  const MIN_DURATION=5000;
+
+  fetch(apiUrl).then(r=>r.json()).then(data=>{
+    if(data.ok&&data.matches){
+      const tmMap=buildTeamMatchMap();
+      data.matches.forEach(m=>{
+        if(!m.finished||m.homeScore===null)return;
+        const h=ESPN_MAP[m.homeTeam]||m.homeTeam;
+        const a=ESPN_MAP[m.awayTeam]||m.awayTeam;
+        const entry=tmMap[h]?.[a];if(!entry)return;
+        const {key,swapped}=entry;
+        const hs=swapped?m.awayScore:m.homeScore,as_=swapped?m.homeScore:m.awayScore;
+        const ex=scores[key];
+        if(!ex||ex.home!==hs||ex.away!==as_){scores[key]={home:hs,away:as_};newKeys.push(key);}
+      });
+      saveScores();
+    }
+    apiDone=true;
+  }).catch(()=>{apiDone=true;apiError=true;});
+
+  // ── 8. Attend min 5s puis retour du trophée ──
+  function checkDone(){
+    if(!apiDone){setTimeout(checkDone,100);return;}
+    const elapsed=Date.now()-START;
+    const wait=Math.max(0,MIN_DURATION-elapsed);
+    setTimeout(()=>finishAnimation(),wait);
+  }
+  checkDone();
+
+  function finishAnimation(){
+    // Barre à 100%
+    barFill.style.transition='width .4s ease';barFill.style.width='100%';
+    // Label disparaît
+    label.style.opacity='0';
+    setTimeout(()=>{
+      // Fond s'éclaircit
+      overlay.classList.remove('dark');
+      // Trophée revient à sa position
+      fly.style.animation='none';
+      fly.style.transition='top .7s cubic-bezier(.4,0,.2,1),left .7s cubic-bezier(.4,0,.2,1),width .7s cubic-bezier(.4,0,.2,1),filter .5s';
+      fly.style.filter='none';
+      fly.style.top=startY+'px';
+      fly.style.left=startX+'px';
+      fly.style.width=startW+'px';
       setTimeout(()=>{
-        overlay.classList.remove('on');
+        // Nettoyage
+        srcTrophy.style.opacity='';
+        fly.remove();rings.forEach(r=>r.remove());
+        label.remove();barBg.remove();
+        overlay.classList.remove('on');overlay._running=false;
         renderAll();
-        if(newKeys.length>0){highlightNewScores(newKeys);showToast(`🆕 ${newKeys.length} nouveau${newKeys.length>1?'x':''} score${newKeys.length>1?'s':''} !`);}
+        if(apiError)showToast('⚠️ Connexion impossible');
+        else if(newKeys.length>0){highlightNewScores(newKeys);showToast(`🆕 ${newKeys.length} nouveau${newKeys.length>1?'x':''} score${newKeys.length>1?'s':''} !`);}
         else showToast('✅ Tout est à jour !');
-      },500);
-    })
-    .catch(()=>{
-      bar.style.transition='width .4s ease';bar.style.width='100%';
-      setTimeout(()=>{overlay.classList.remove('on');renderAll();showToast('⚠️ Connexion impossible');},500);
-    });
+      },750);
+    },400);
+  }
 }
 
 let highlightTimeout=null;
