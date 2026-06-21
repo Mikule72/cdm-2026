@@ -51,7 +51,7 @@ main{position:relative;z-index:5;padding:20px 14px 80px;max-width:1700px;margin:
 .pts{font-weight:700;color:var(--gold)}.gd-c{color:var(--dim)}
 .gm-area{padding:7px 10px;border-top:1px solid var(--glass-b)}
 .gm-title{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
-.mm{display:flex;align-items:center;justify-content:space-between;padding:3px 5px;border-radius:5px;cursor:pointer;font-size:10.5px;transition:background .18s;gap:4px}
+.mm{display:flex;align-items:center;justify-content:space-between;padding:3px 5px;border-radius:5px;font-size:10.5px;gap:4px}
 .mm:hover{background:rgba(255,255,255,.06)}
 .mm-t{display:flex;align-items:center;gap:3px;flex:1}.mm-t.right{flex-direction:row-reverse}
 .mm-s{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1.5px;color:var(--gold);min-width:36px;text-align:center;padding:0 4px}
@@ -64,8 +64,8 @@ main{position:relative;z-index:5;padding:20px 14px 80px;max-width:1700px;margin:
 .b-col-left{align-items:flex-end}.b-col-right{align-items:flex-start}
 .b-label{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;color:var(--gold);text-align:center;padding:5px 6px;margin-bottom:5px;border-bottom:1px solid rgba(200,168,75,.2);opacity:.85}
 .b-matches{display:flex;flex-direction:column;justify-content:space-around;flex:1;gap:5px}
-.bm{background:var(--glass);border:1px solid var(--glass-b);border-radius:8px;min-width:145px;max-width:158px;cursor:pointer;transition:all .2s;overflow:hidden;flex-shrink:0}
-.bm:hover{border-color:rgba(200,168,75,.5);transform:scale(1.03)}.bm.fr-m{border-color:var(--gold);box-shadow:0 0 14px rgba(200,168,75,.35)}
+.bm{background:var(--glass);border:1px solid var(--glass-b);border-radius:8px;min-width:145px;max-width:158px;overflow:hidden;flex-shrink:0}
+.bm.fr-m{border-color:var(--gold);box-shadow:0 0 14px rgba(200,168,75,.35)}
 .bt{display:flex;align-items:center;gap:5px;padding:6px 8px;font-size:11px;font-weight:500;border-bottom:1px solid rgba(255,255,255,.06);transition:background .2s}
 .bt:last-child{border-bottom:none}
 .bt.win{background:rgba(255,255,255,.07);font-weight:700}.bt.lose{opacity:.35;text-decoration:line-through}
@@ -79,7 +79,7 @@ main{position:relative;z-index:5;padding:20px 14px 80px;max-width:1700px;margin:
 .final-trophy{display:block;margin:0 auto 6px;animation:float 3.5s ease-in-out infinite;width:42px;height:63px}
 .final-t{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);letter-spacing:3px}
 .final-info{font-size:9.5px;color:var(--dim);margin-bottom:10px;line-height:1.6}
-.final-slot{background:var(--glass);border:1px solid var(--glass-b);border-radius:8px;padding:8px 10px;font-size:11px;margin-bottom:6px;min-height:34px;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
+.final-slot{background:var(--glass);border:1px solid var(--glass-b);border-radius:8px;padding:8px 10px;font-size:11px;margin-bottom:6px;min-height:34px;display:flex;align-items:center;justify-content:center;gap:6px}
 .final-vs{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--dim);margin-bottom:6px}
 
 /* ── FRANCE TAB ── */
@@ -97,7 +97,7 @@ main{position:relative;z-index:5;padding:20px 14px 80px;max-width:1700px;margin:
 .fr-phase{margin-bottom:28px}
 .fph-t{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--gold);padding:7px 0;border-bottom:1px solid rgba(200,168,75,.25);margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .mc{background:linear-gradient(135deg,rgba(0,35,149,.18),var(--glass));border:1px solid var(--glass-b);border-radius:13px;padding:16px 18px;position:relative;overflow:hidden;transition:all .3s;margin-bottom:10px}
-.mc:hover{border-color:rgba(200,168,75,.4);transform:translateX(4px)}.mc.played{border-color:rgba(0,210,90,.3)}
+.mc:hover{border-color:rgba(200,168,75,.15)}.mc.played{border-color:rgba(0,210,90,.3)}
 .mc.upcoming{animation:mcpulse 4s ease-in-out infinite}.mc.locked{opacity:.48;background:var(--glass)}
 @keyframes mcpulse{0%,100%{box-shadow:0 0 0 rgba(200,168,75,0)}50%{box-shadow:0 0 18px rgba(200,168,75,.18)}}
 .mc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
@@ -112,8 +112,8 @@ main{position:relative;z-index:5;padding:20px 14px 80px;max-width:1700px;margin:
 .mc-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;text-align:center}
 .mc-name.fr{color:var(--gold)}
 .mc-scores{display:flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0;padding:0 12px}
-.sc-num{font-family:'Bebas Neue',sans-serif;font-size:54px;line-height:1;cursor:pointer;transition:color .2s}
-.sc-num:hover{color:var(--gold)}.sc-sep{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--dim)}
+.sc-num{font-family:'Bebas Neue',sans-serif;font-size:54px;line-height:1}
+.sc-sep{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--dim)}
 .sc-pen{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--dim);letter-spacing:4px}
 .mc-info{display:flex;align-items:center;justify-content:center;gap:10px;font-size:11px;color:var(--dim);margin-bottom:10px;flex-wrap:wrap}
 .mc-info-sep{opacity:.3}
@@ -126,23 +126,6 @@ main{position:relative;z-index:5;padding:20px 14px 80px;max-width:1700px;margin:
 .stat-v{font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--gold);line-height:1}
 .stat-l{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-top:3px}
 
-/* ── MODAL ── */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(10px);z-index:2000;align-items:center;justify-content:center}
-.overlay.on{display:flex}
-.modal{background:linear-gradient(135deg,#0D1232,var(--bg));border:1px solid var(--gold);border-radius:16px;padding:28px;width:min(440px,92vw);box-shadow:0 0 60px rgba(200,168,75,.22)}
-.modal h3{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:var(--gold);text-align:center;margin-bottom:6px}
-.modal-match{text-align:center;font-size:12px;color:var(--dim);margin-bottom:20px}
-.si-row{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:20px}
-.si-g{display:flex;flex-direction:column;align-items:center;gap:7px}
-.si-lbl{font-size:11px;color:var(--dim);display:flex;align-items:center;gap:5px}
-.si{width:76px;height:62px;background:rgba(255,255,255,.06);border:2px solid var(--glass-b);border-radius:8px;color:var(--white);font-family:'Bebas Neue',sans-serif;font-size:38px;text-align:center;outline:none;transition:border-color .2s}
-.si:focus{border-color:var(--gold)}.si-sep{font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--dim);margin-top:22px}
-.mbr{display:flex;gap:10px}
-.btn{flex:1;padding:12px;border-radius:8px;border:none;cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;transition:all .2s}
-.btn-c{background:rgba(255,255,255,.05);color:var(--dim);border:1px solid var(--glass-b)}.btn-c:hover{background:rgba(255,255,255,.1);color:#ccc}
-.btn-s{background:var(--gold);color:var(--bg);font-weight:700}.btn-s:hover{background:var(--gold-l)}
-.btn-reset{background:rgba(220,50,50,.15);color:#f88;border:1px solid rgba(220,50,50,.25);font-size:13px;padding:8px;letter-spacing:1px;margin-top:8px;width:100%;border-radius:8px;cursor:pointer;font-family:'Bebas Neue',sans-serif}
-.btn-reset:hover{background:rgba(220,50,50,.25)}
 .fab{position:fixed;bottom:22px;right:22px;background:var(--gold);color:var(--bg);border:none;border-radius:50px;padding:11px 20px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;cursor:pointer;z-index:300;display:flex;align-items:center;gap:7px;box-shadow:0 4px 22px rgba(200,168,75,.4);transition:all .2s}
 .fab:hover{background:var(--gold-l);transform:scale(1.06)}
 .spin{animation:spin .7s linear}
@@ -307,7 +290,7 @@ main{position:relative;z-index:5;padding:20px 14px 80px;max-width:1700px;margin:
 
 <div class="tab" id="tab-bracket">
   <div class="section-title" style="margin-bottom:5px">Tableau de la compétition — Phase éliminatoire</div>
-  <p style="font-size:11px;color:var(--dim);margin-bottom:14px">🇫🇷 Chemin France en or · Qualifiés projetés en italique · Cliquez pour saisir un score</p>
+  <p style="font-size:11px;color:var(--dim);margin-bottom:14px">🇫🇷 Chemin France en or · Qualifiés projetés en italique · 🤖 Scores mis à jour automatiquement</p>
   <div class="bracket-scroll"><div class="bracket-wrap" id="bracket-wrap"></div></div>
 </div>
 
@@ -335,22 +318,6 @@ main{position:relative;z-index:5;padding:20px 14px 80px;max-width:1700px;margin:
 
 <button class="fab" onclick="refreshAll()" id="fab-refresh"><span id="fab-icon">🔄</span> Actualiser</button>
 
-<div class="overlay" id="modal-overlay" onclick="closeModal(event)">
-  <div class="modal" onclick="event.stopPropagation()">
-    <h3>SAISIR LE SCORE</h3>
-    <div class="modal-match" id="modal-match-info"></div>
-    <div class="si-row">
-      <div class="si-g"><div class="si-lbl" id="modal-home-lbl"></div><input class="si" type="number" id="si-home" min="0" max="30" placeholder="0"></div>
-      <div class="si-sep">–</div>
-      <div class="si-g"><div class="si-lbl" id="modal-away-lbl"></div><input class="si" type="number" id="si-away" min="0" max="30" placeholder="0"></div>
-    </div>
-    <div class="mbr">
-      <button class="btn btn-c" onclick="closeModal()">Annuler</button>
-      <button class="btn btn-s" onclick="saveScore()">✓ Valider</button>
-    </div>
-    <button class="btn-reset" onclick="resetScore()">✕ Effacer ce score</button>
-  </div>
-</div>
 <div class="toast" id="toast"></div>
 <div id="confetti"></div>
 
@@ -513,7 +480,6 @@ const R32=[
 // STATE
 // ════════════════════════════════════════════════════════
 let scores={};
-let currentModal=null;
 
 function loadScores(){
   try{scores=JSON.parse(localStorage.getItem('wc2026_scores')||'{}');}catch{scores={};}
@@ -612,7 +578,7 @@ function renderGroups(){
       const key=g+'_'+idx,sc=getScore(key);
       const h=teams[m[0]],a=teams[m[1]];
       const sHtml=sc!==null?`<span class="mm-s">${sc.home}–${sc.away}</span>`:`<span class="mm-s pen">vs</span>`;
-      return`<div class="mm" onclick="openModal('${key}','${g}',${idx})"><div class="mm-t"><span class="flag">${FLAGS[h]||'🌍'}</span><span>${h}</span></div>${sHtml}<div class="mm-t right"><span>${a}</span><span class="flag">${FLAGS[a]||'🌍'}</span></div></div>`;
+      return`<div class="mm"><div class="mm-t"><span class="flag">${FLAGS[h]||'🌍'}</span><span>${h}</span></div>${sHtml}<div class="mm-t right"><span>${a}</span><span class="flag">${FLAGS[a]||'🌍'}</span></div></div>`;
     }).join('');
     card.innerHTML=hdr+tbl+`<div class="gm-area"><div class="gm-title">MATCHS</div>${mms}</div>`;
     grid.appendChild(card);
@@ -687,7 +653,7 @@ function renderBracket(){
       }
       return`<div class="bt tbd">${lbl||fmtSlot(s)}</div>`;
     }
-    return`<div class="bm ${(fr1||fr2)?'fr-m':''}" onclick="openKOModal('${mid}','${s1}','${s2}')" title="${rnd}">
+    return`<div class="bm ${(fr1||fr2)?'fr-m':''}" title="${rnd}">
       ${teamRow(r1,s1,fr1,true)}${teamRow(r2,s2,fr2,false)}</div>`;
   }
 
@@ -718,11 +684,11 @@ function renderBracket(){
       <img class="final-trophy" src="trophy.png" alt="FIFA World Cup Trophy">
       <div class="final-t">FINALE</div>
       <div class="final-info">19 JUILLET 2026 · MetLife Stadium<br>East Rutherford, New Jersey</div>
-      <div class="final-slot" onclick="openKOModal('final','${SM.sf_L.home}','${SM.sf_R.home}')">
+      <div class="final-slot">
         ${finL?finL.flag+' '+finL.name:'<span style="color:var(--dim);font-style:italic;font-size:10px">'+fmtSlot(SM.final.home)+'</span>'}
       </div>
       <div class="final-vs">VS</div>
-      <div class="final-slot" onclick="openKOModal('final','${SM.sf_L.home}','${SM.sf_R.home}')">
+      <div class="final-slot">
         ${finR?finR.flag+' '+finR.name:'<span style="color:var(--dim);font-style:italic;font-size:10px">'+fmtSlot(SM.final.away)+'</span>'}
       </div>
       ${fsc?`<div style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--gold);margin-top:8px;letter-spacing:4px">${fsc.home} – ${fsc.away}</div>`:''}
@@ -747,7 +713,7 @@ function renderFrance(){
     const dateLocal=formatDateFR(m.date);
     const probFr=frIsHome?m.probHome:m.probAway;
     const probOp=frIsHome?m.probAway:m.probHome;
-    html+=`<div class="mc ${status}" onclick="openModal('${m.matchKey}','${m.matchKey.split('_')[0]}',${m.matchKey.split('_')[1]})">
+    html+=`<div class="mc ${status}">
       <div class="mc-top"><span class="badge-phase">${m.phase}</span><span class="badge-status ${sCls}">${sLabel}</span></div>
       <div class="mc-teams">
         <div class="mc-team"><div class="mc-flag">${FLAGS[m.home]||'🌍'}</div><div class="mc-name ${m.home==='France'?'fr':''}">${m.home}</div></div>
@@ -836,67 +802,6 @@ function updateCountdown(){
 function pad(n){return String(n).padStart(2,'0');}
 setInterval(updateCountdown,1000);
 
-// ════════════════════════════════════════════════════════
-// MODAL
-// ════════════════════════════════════════════════════════
-function openModal(key,grp,idx){
-  const teams=GROUPS[grp],m=GROUP_MATCHES[grp][idx];if(!teams||!m)return;
-  const h=teams[m[0]],a=teams[m[1]],sc=getScore(key);
-  currentModal={key,grp};
-  document.getElementById('modal-home-lbl').innerHTML=`${FLAGS[h]||'🌍'} ${h}`;
-  document.getElementById('modal-away-lbl').innerHTML=`${FLAGS[a]||'🌍'} ${a}`;
-  document.getElementById('modal-match-info').textContent=`${h} vs ${a} — Groupe ${grp}`;
-  document.getElementById('si-home').value=sc?sc.home:'';
-  document.getElementById('si-away').value=sc?sc.away:'';
-  document.getElementById('modal-overlay').classList.add('on');
-  setTimeout(()=>document.getElementById('si-home').focus(),100);
-}
-
-function openKOModal(mid,s1,s2){
-  const r1=resolveSlot(s1),r2=resolveSlot(s2);
-  const h=r1?r1.name:s1,a=r2?r2.name:s2;
-  const key='ko_'+mid,sc=getScore(key);
-  currentModal={key,isKO:true};
-  document.getElementById('modal-home-lbl').innerHTML=`${r1?r1.flag:'🌍'} ${h}`;
-  document.getElementById('modal-away-lbl').innerHTML=`${r2?r2.flag:'🌍'} ${a}`;
-  document.getElementById('modal-match-info').textContent=`${h} vs ${a}`;
-  document.getElementById('si-home').value=sc?sc.home:'';
-  document.getElementById('si-away').value=sc?sc.away:'';
-  document.getElementById('modal-overlay').classList.add('on');
-  setTimeout(()=>document.getElementById('si-home').focus(),100);
-}
-
-function closeModal(e){
-  if(e&&e.target!==document.getElementById('modal-overlay'))return;
-  document.getElementById('modal-overlay').classList.remove('on');currentModal=null;
-}
-
-function saveScore(){
-  if(!currentModal)return;
-  const hv=parseInt(document.getElementById('si-home').value);
-  const av=parseInt(document.getElementById('si-away').value);
-  if(isNaN(hv)||isNaN(av)||hv<0||av<0){showToast('⚠️ Scores invalides');return;}
-  scores[currentModal.key]={home:hv,away:av};saveScores();
-  if(!currentModal.isKO){
-    const[grp,idx]=[currentModal.key.split('_')[0],parseInt(currentModal.key.split('_')[1])];
-    const m=GROUP_MATCHES[grp]?.[idx];
-    if(m&&GROUPS[grp]){const t=GROUPS[grp];if((t[m[0]]==='France'&&hv>av)||(t[m[1]]==='France'&&av>hv))launchConfetti();}
-  }
-  document.getElementById('modal-overlay').classList.remove('on');currentModal=null;
-  renderAll();showToast('✓ Score enregistré');
-}
-
-function resetScore(){
-  if(!currentModal)return;
-  delete scores[currentModal.key];saveScores();
-  document.getElementById('modal-overlay').classList.remove('on');currentModal=null;
-  renderAll();showToast('Score effacé');
-}
-
-document.addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&currentModal)saveScore();
-  if(e.key==='Escape'){document.getElementById('modal-overlay').classList.remove('on');currentModal=null;}
-});
 
 // ════════════════════════════════════════════════════════
 // CONFETTI
