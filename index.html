@@ -135,6 +135,11 @@ main{position:relative;z-index:5;padding:20px 14px 80px;max-width:1700px;margin:
 @keyframes cfall{0%{opacity:1;transform:translateY(-30px) rotate(0deg)}100%{opacity:0;transform:translateY(100vh) rotate(720deg)}}
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(0,35,149,.9);border:1px solid var(--gold);border-radius:10px;padding:12px 22px;font-size:13px;color:var(--white);z-index:5000;opacity:0;transition:all .35s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* ── NOUVEAU SCORE ── */
+@keyframes score-pulse{0%,100%{box-shadow:0 0 0 0 rgba(200,168,75,0)}40%{box-shadow:0 0 0 6px rgba(200,168,75,.5)}}
+@keyframes score-glow{0%,100%{background:transparent}50%{background:rgba(200,168,75,.18)}}
+.score-new{animation:score-pulse 1.2s ease-in-out infinite,score-glow 1.2s ease-in-out infinite;border-color:var(--gold)!important;border-radius:5px;position:relative}
+.score-new::after{content:"🆕";position:absolute;top:-8px;right:-6px;font-size:11px;background:var(--gold);color:var(--bg);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-style:normal}
 .legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;font-size:11px}
 .leg-item{display:flex;align-items:center;gap:6px;color:var(--dim)}
 .leg-dot{width:10px;height:10px;border-radius:50%}
@@ -578,7 +583,7 @@ function renderGroups(){
       const key=g+'_'+idx,sc=getScore(key);
       const h=teams[m[0]],a=teams[m[1]];
       const sHtml=sc!==null?`<span class="mm-s">${sc.home}–${sc.away}</span>`:`<span class="mm-s pen">vs</span>`;
-      return`<div class="mm"><div class="mm-t"><span class="flag">${FLAGS[h]||'🌍'}</span><span>${h}</span></div>${sHtml}<div class="mm-t right"><span>${a}</span><span class="flag">${FLAGS[a]||'🌍'}</span></div></div>`;
+      return`<div class="mm" data-match-key="${key}"><div class="mm-t"><span class="flag">${FLAGS[h]||'🌍'}</span><span>${h}</span></div>${sHtml}<div class="mm-t right"><span>${a}</span><span class="flag">${FLAGS[a]||'🌍'}</span></div></div>`;
     }).join('');
     card.innerHTML=hdr+tbl+`<div class="gm-area"><div class="gm-title">MATCHS</div>${mms}</div>`;
     grid.appendChild(card);
@@ -831,11 +836,44 @@ function formatDateFR(iso){
 // ════════════════════════════════════════════════════════
 function renderAll(){renderGroups();renderBracket();renderFrance();}
 
+// ESPN displayName → nom interne français
+const ESPN_MAP={
+  "Mexico":"Mexique","South Africa":"Afrique du Sud","South Korea":"Corée du Sud",
+  "Czechia":"Tchéquie","Czech Republic":"Tchéquie",
+  "Canada":"Canada","Bosnia-Herzegovina":"Bosnie-Herzégovine","Bosnia and Herzegovina":"Bosnie-Herzégovine",
+  "Qatar":"Qatar","Switzerland":"Suisse",
+  "Brazil":"Brésil","Morocco":"Maroc","Haiti":"Haïti","Scotland":"Écosse",
+  "United States":"USA","USA":"USA","Paraguay":"Paraguay","Australia":"Australie","Turkey":"Turquie","Türkiye":"Turquie",
+  "Germany":"Allemagne","Curaçao":"Curaçao","Curacao":"Curaçao","Ivory Coast":"Côte d'Ivoire","Cote d'Ivoire":"Côte d'Ivoire","Ecuador":"Équateur",
+  "Netherlands":"Pays-Bas","Japan":"Japon","Sweden":"Suède","Tunisia":"Tunisie",
+  "Belgium":"Belgique","Egypt":"Égypte","Iran":"Iran","New Zealand":"Nouvelle-Zélande",
+  "Spain":"Espagne","Cape Verde":"Cap-Vert","Saudi Arabia":"Arabie Saoudite","Uruguay":"Uruguay",
+  "France":"France","Senegal":"Sénégal","Iraq":"Irak","Norway":"Norvège",
+  "Argentina":"Argentine","Algeria":"Algérie","Austria":"Autriche","Jordan":"Jordanie",
+  "Portugal":"Portugal","DR Congo":"RD Congo","Democratic Republic of Congo":"RD Congo","Uzbekistan":"Ouzbékistan","Colombia":"Colombie",
+  "England":"Angleterre","Croatia":"Croatie","Ghana":"Ghana","Panama":"Panama"
+};
+
+// Construit une map nom_fr → clé de match (ex: "France" → "I_0")
+function buildTeamMatchMap(){
+  const map={};
+  Object.entries(GROUPS).forEach(([grp,teams])=>{
+    GROUP_MATCHES[grp].forEach((m,idx)=>{
+      const key=grp+'_'+idx;
+      const h=teams[m[0]],a=teams[m[1]];
+      if(!map[h])map[h]={};
+      if(!map[a])map[a]={};
+      map[h][a]=key;
+      map[a][h]=key;
+    });
+  });
+  return map;
+}
+
 function refreshAll(){
   const overlay=document.getElementById('ref-overlay');
   const bar=document.getElementById('ref-bar');
   const stepIds=['rs1','rs2','rs3','rs4'];
-  // Reset all steps
   stepIds.forEach(id=>{
     const el=document.getElementById(id);
     el.classList.remove('active','done');
@@ -845,35 +883,83 @@ function refreshAll(){
   bar.style.transition='none';
   overlay.classList.add('on');
 
-  const delays=[0,800,1500,2200];
+  const delays=[0,700,1400,2100];
   stepIds.forEach((id,i)=>{
     setTimeout(()=>{
-      if(i>0){
-        const prev=document.getElementById(stepIds[i-1]);
-        prev.classList.remove('active');prev.classList.add('done');
-        prev.querySelector('.rs-icon').textContent='✅';
-      }
+      if(i>0){const prev=document.getElementById(stepIds[i-1]);prev.classList.remove('active');prev.classList.add('done');prev.querySelector('.rs-icon').textContent='✅';}
       document.getElementById(id).classList.add('active');
-      bar.style.transition='width .6s cubic-bezier(.4,0,.2,1)';
+      bar.style.transition='width .5s cubic-bezier(.4,0,.2,1)';
       bar.style.width=((i+1)/stepIds.length*100)+'%';
     },delays[i]);
   });
 
-  setTimeout(()=>{
-    // Last step done
-    const last=document.getElementById(stepIds[stepIds.length-1]);
-    last.classList.remove('active');last.classList.add('done');
-    last.querySelector('.rs-icon').textContent='✅';
-    bar.style.width='100%';
-    // Re-merge any new preloaded scores
-    Object.keys(PRELOADED).forEach(k=>{if(!(k in scores))scores[k]=PRELOADED[k];});
-    saveScores();
-    setTimeout(()=>{
-      overlay.classList.remove('on');
-      renderAll();
-      showToast('✅ Scores mis à jour !');
-    },600);
-  },3000);
+  // Appel API réel
+  const apiUrl=window.location.hostname==='localhost'||window.location.hostname==='127.0.0.1'
+    ?'https://cdm-2026-bleus.vercel.app/api/scores'
+    :'/api/scores';
+
+  fetch(apiUrl)
+    .then(r=>r.json())
+    .then(data=>{
+      const newKeys=[];
+      if(data.ok&&data.matches){
+        const tmMap=buildTeamMatchMap();
+        data.matches.forEach(m=>{
+          if(!m.finished||m.homeScore===null)return;
+          const h=ESPN_MAP[m.homeTeam]||m.homeTeam;
+          const a=ESPN_MAP[m.awayTeam]||m.awayTeam;
+          const key=tmMap[h]?.[a];
+          if(!key)return;
+          const existing=scores[key];
+          if(!existing||existing.home!==m.homeScore||existing.away!==m.awayScore){
+            scores[key]={home:m.homeScore,away:m.awayScore};
+            newKeys.push(key);
+          }
+        });
+        saveScores();
+      }
+      // Finalise animation puis affiche résultats
+      setTimeout(()=>{
+        const last=document.getElementById(stepIds[stepIds.length-1]);
+        last.classList.remove('active');last.classList.add('done');last.querySelector('.rs-icon').textContent='✅';
+        bar.style.width='100%';
+        setTimeout(()=>{
+          overlay.classList.remove('on');
+          renderAll();
+          if(newKeys.length>0){
+            highlightNewScores(newKeys);
+            showToast(`🆕 ${newKeys.length} nouveau${newKeys.length>1?'x':''} score${newKeys.length>1?'s':''} !`);
+          } else {
+            showToast('✅ Tout est à jour !');
+          }
+        },500);
+      },2800);
+    })
+    .catch(()=>{
+      // Fallback si API indisponible
+      setTimeout(()=>{
+        const last=document.getElementById(stepIds[stepIds.length-1]);
+        last.classList.remove('active');last.classList.add('done');last.querySelector('.rs-icon').textContent='⚠️';
+        bar.style.width='100%';
+        setTimeout(()=>{overlay.classList.remove('on');renderAll();showToast('⚠️ Connexion impossible');},500);
+      },2800);
+    });
+}
+
+let highlightTimeout=null;
+function highlightNewScores(keys){
+  // Supprime les highlights précédents
+  document.querySelectorAll('.score-new').forEach(el=>el.classList.remove('score-new'));
+  if(highlightTimeout)clearTimeout(highlightTimeout);
+  // Marque les matchs concernés
+  keys.forEach(key=>{
+    const els=document.querySelectorAll(`[data-match-key="${key}"]`);
+    els.forEach(el=>el.classList.add('score-new'));
+  });
+  // Retire après 20s
+  highlightTimeout=setTimeout(()=>{
+    document.querySelectorAll('.score-new').forEach(el=>el.classList.remove('score-new'));
+  },20000);
 }
 
 setInterval(()=>renderAll(),60000);
