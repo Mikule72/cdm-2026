@@ -1,0 +1,5 @@
+.DS_Store
+*.log
+node_modules/
+.vercel
+trophy_b64.txt
