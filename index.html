@@ -457,6 +457,8 @@ const PRELOADED={
   // Groupe A
   "A_0":{home:2,away:0},   // Mexique 2-0 Afrique du Sud
   "A_1":{home:2,away:1},   // Corée du Sud 2-1 Tchéquie
+  "A_2":{home:1,away:0},   // Mexique 1-0 Corée du Sud
+  "A_3":{home:0,away:2},   // Afrique du Sud 0-2 Tchéquie
   // Groupe B
   "B_0":{home:1,away:1},   // Canada 1-1 Bosnie
   "B_1":{home:1,away:1},   // Qatar 1-1 Suisse
@@ -465,8 +467,11 @@ const PRELOADED={
   // Groupe C
   "C_0":{home:1,away:1},   // Brésil 1-1 Maroc
   "C_1":{home:0,away:1},   // Haïti 0-1 Écosse
+  "C_2":{home:3,away:0},   // Brésil 3-0 Haïti
+  "C_3":{home:0,away:2},   // Maroc 0-2 Écosse
   // Groupe D
   "D_0":{home:4,away:1},   // USA 4-1 Paraguay
+  "D_1":{home:2,away:0},   // Australie 2-0 Turquie
   "D_2":{home:2,away:0},   // USA 2-0 Australie
   "D_3":{home:1,away:0},   // Paraguay 1-0 Turquie
   // Groupe E
@@ -476,17 +481,24 @@ const PRELOADED={
   "E_3":{home:0,away:0},   // Curaçao 0-0 Équateur
   // Groupe F
   "F_0":{home:2,away:2},   // Pays-Bas 2-2 Japon
+  "F_1":{home:5,away:1},   // Suède 5-1 Tunisie
   "F_2":{home:5,away:1},   // Pays-Bas 5-1 Suède
-  "F_3":{home:4,away:0},   // Japon 4-0 Tunisie
+  "F_3":{home:4,away:1},   // Japon 4-1 Tunisie
   // Groupe G
   "G_0":{home:1,away:1},   // Belgique 1-1 Égypte
+  "G_1":{home:2,away:2},   // Iran 2-2 Nouvelle-Zélande
+  // Groupe H
+  "H_0":{home:0,away:0},   // Espagne 0-0 Cap-Vert
+  "H_1":{home:1,away:1},   // Arabie Saoudite 1-1 Uruguay
+  "H_2":{home:4,away:0},   // Espagne 4-0 Arabie Saoudite
   // Groupe I — FRANCE
   "I_0":{home:3,away:1},   // France 3-1 Sénégal ⭐
   "I_1":{home:1,away:4},   // Irak 1-4 Norvège
   // Groupe J
-  "J_0":{home:3,away:0},   // Argentine 3-0 Algérie (hat-trick Messi)
+  "J_0":{home:3,away:0},   // Argentine 3-0 Algérie
+  "J_1":{home:1,away:3},   // Jordanie 1-3 Autriche
   // Groupe K
-  "K_0":{home:0,away:0},   // Portugal 0-0 RD Congo
+  "K_1":{home:1,away:3},   // Ouzbékistan 1-3 Colombie
   // Groupe L
   "L_0":{home:4,away:2},   // Angleterre 4-2 Croatie
   "L_1":{home:1,away:0},   // Ghana 1-0 Panama
@@ -957,11 +969,12 @@ const ESPN_MAP={
   "Spain":"Espagne","Cape Verde":"Cap-Vert","Saudi Arabia":"Arabie Saoudite","Uruguay":"Uruguay",
   "France":"France","Senegal":"Sénégal","Iraq":"Irak","Norway":"Norvège",
   "Argentina":"Argentine","Algeria":"Algérie","Austria":"Autriche","Jordan":"Jordanie",
-  "Portugal":"Portugal","DR Congo":"RD Congo","Democratic Republic of Congo":"RD Congo","Uzbekistan":"Ouzbékistan","Colombia":"Colombie",
+  "Portugal":"Portugal","DR Congo":"RD Congo","Congo DR":"RD Congo","Democratic Republic of Congo":"RD Congo","Uzbekistan":"Ouzbékistan","Colombia":"Colombie",
   "England":"Angleterre","Croatia":"Croatie","Ghana":"Ghana","Panama":"Panama"
 };
 
-// Construit une map nom_fr → clé de match (ex: "France" → "I_0")
+// Construit une map (nomH, nomA) → {key, swapped}
+// swapped=true si ESPN retourne les équipes dans l'ordre inverse de notre structure
 function buildTeamMatchMap(){
   const map={};
   Object.entries(GROUPS).forEach(([grp,teams])=>{
@@ -970,8 +983,8 @@ function buildTeamMatchMap(){
       const h=teams[m[0]],a=teams[m[1]];
       if(!map[h])map[h]={};
       if(!map[a])map[a]={};
-      map[h][a]=key;
-      map[a][h]=key;
+      map[h][a]={key,swapped:false};
+      map[a][h]={key,swapped:true};
     });
   });
   return map;
@@ -1015,11 +1028,14 @@ function refreshAll(){
           if(!m.finished||m.homeScore===null)return;
           const h=ESPN_MAP[m.homeTeam]||m.homeTeam;
           const a=ESPN_MAP[m.awayTeam]||m.awayTeam;
-          const key=tmMap[h]?.[a];
-          if(!key)return;
+          const entry=tmMap[h]?.[a];
+          if(!entry)return;
+          const {key,swapped}=entry;
+          const hs=swapped?m.awayScore:m.homeScore;
+          const as_=swapped?m.homeScore:m.awayScore;
           const existing=scores[key];
-          if(!existing||existing.home!==m.homeScore||existing.away!==m.awayScore){
-            scores[key]={home:m.homeScore,away:m.awayScore};
+          if(!existing||existing.home!==hs||existing.away!==as_){
+            scores[key]={home:hs,away:as_};
             newKeys.push(key);
           }
         });
