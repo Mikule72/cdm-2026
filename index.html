@@ -60,6 +60,30 @@ main{position:relative;z-index:5;padding:20px 14px 80px;max-width:1700px;margin:
 /* ── BRACKET ── */
 .bracket-scroll{overflow-x:auto;overflow-y:visible;padding:10px 0 20px}
 .bracket-wrap{display:flex;align-items:stretch;min-width:1480px;gap:0;padding:8px}
+/* ── BRACKET MOBILE ── */
+.bracket-tabs{display:none;gap:8px;margin-bottom:16px}
+.btab{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:var(--dim);font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1.5px;padding:10px;cursor:pointer;transition:all .2s}
+.btab.active{background:rgba(200,168,75,.15);border-color:var(--gold);color:var(--gold)}
+.bracket-mobile{display:none}
+.bm-round{margin-bottom:18px}
+.bm-round-label{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:2.5px;color:var(--gold);opacity:.8;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid rgba(200,168,75,.2)}
+.bm-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:10px;padding:9px 12px;margin-bottom:7px}
+.bm-card.fr-m{border-color:var(--gold);box-shadow:0 0 10px rgba(200,168,75,.25)}
+.bm-team{display:flex;align-items:center;justify-content:space-between;font-size:12px;letter-spacing:.5px;padding:3px 0}
+.bm-team .name{display:flex;align-items:center;gap:6px}
+.bm-team .name.fr{color:var(--gold)}
+.bm-team .sc{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--gold);min-width:18px;text-align:right}
+.bm-team .sc.tbd{font-size:10px;color:rgba(255,255,255,.25);font-style:italic;font-family:sans-serif}
+.bm-sep{height:1px;background:rgba(255,255,255,.08);margin:3px 0}
+.bm-slot{font-size:9px;color:rgba(255,255,255,.3);letter-spacing:.5px;font-style:italic;margin-top:1px}
+.bm-arrow{text-align:center;color:rgba(255,255,255,.18);font-size:13px;margin:2px 0 12px;letter-spacing:1px}
+.bm-final{background:linear-gradient(135deg,rgba(200,168,75,.12),rgba(200,168,75,.04));border:1px solid var(--gold);border-radius:12px;padding:14px;text-align:center;margin-bottom:16px}
+.bm-final-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--gold);margin-bottom:10px}
+@media(max-width:768px){
+  .bracket-tabs{display:flex}
+  .bracket-scroll{display:none}
+  .bracket-mobile{display:block}
+}
 .b-col{display:flex;flex-direction:column;padding:0 3px}
 .b-col-left{align-items:flex-end}.b-col-right{align-items:flex-start}
 .b-label{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;color:var(--gold);text-align:center;padding:5px 6px;margin-bottom:5px;border-bottom:1px solid rgba(200,168,75,.2);opacity:.85}
@@ -296,7 +320,16 @@ main{position:relative;z-index:5;padding:20px 14px 80px;max-width:1700px;margin:
 <div class="tab" id="tab-bracket">
   <div class="section-title" style="margin-bottom:5px">Tableau de la compétition — Phase éliminatoire</div>
   <p style="font-size:11px;color:var(--dim);margin-bottom:14px">🇫🇷 Chemin France en or · Qualifiés projetés en italique · 🤖 Scores mis à jour automatiquement</p>
+  <!-- Sous-onglets mobiles -->
+  <div class="bracket-tabs" id="bracket-tabs">
+    <button class="btab active" id="btab-L" onclick="setBracketTab('L')">⬅ TABLEAU 1</button>
+    <button class="btab" id="btab-R" onclick="setBracketTab('R')">TABLEAU 2 🇫🇷</button>
+  </div>
+  <!-- Desktop : tableau horizontal -->
   <div class="bracket-scroll"><div class="bracket-wrap" id="bracket-wrap"></div></div>
+  <!-- Mobile : colonnes verticales -->
+  <div class="bracket-mobile" id="bracket-mobile-L"></div>
+  <div class="bracket-mobile" id="bracket-mobile-R" style="display:none"></div>
 </div>
 
 <div class="tab" id="tab-france">
@@ -700,7 +733,81 @@ function renderBracket(){
     </div></div>`;
 
   wrap.innerHTML=colHtml(LC,'L')+finalHtml+colHtml([...RC].reverse(),'R');
+
+  // ── MOBILE VERTICAL ──
+  function mobileTeamRow(s,isFr,isHome){
+    const r=resolveSlot(s);
+    const sc_ko=getScore('ko_'+arguments[3]);
+    const lbl=slotLabel(s);
+    const score=sc_ko?(isHome?sc_ko.home:sc_ko.away):null;
+    if(r){
+      return`<div class="bm-team">
+        <div class="name ${isFr?'fr':''}">${r.flag} ${r.name.length>16?r.name.slice(0,16)+'…':r.name}${!r.confirmed?'<span style="opacity:.4;font-size:9px;margin-left:2px">~</span>':''}</div>
+        <div class="sc ${score===null?'tbd':''}">${score!==null?score:'–'}</div>
+      </div>${lbl?`<div class="bm-slot">${lbl}</div>`:''}`;
+    }
+    const dl=lbl||fmtSlot(s);
+    return`<div class="bm-team"><div class="name" style="color:rgba(255,255,255,.3);font-style:italic;font-size:11px">${dl}</div><div class="sc tbd">–</div></div>`;
+  }
+
+  function makeMobileMatch(sm,mid,rnd){
+    if(!sm)return'';
+    const fr1=isFranceSlot(sm.home),fr2=isFranceSlot(sm.away);
+    const sc_ko=getScore('ko_'+mid);
+    function slotLabelLocal(s){
+      if(!s||FLAGS[s])return'';
+      if(s.match(/^[12][A-L]$/))return(s[0]==='1'?'1er ':'2e ')+'Grp '+s[1];
+      if(s.match(/^3[A-L]+/))return'3e '+s.slice(1).split('').join('/');
+      if(s.startsWith('~'))return'Vainqueur '+s.slice(1);
+      return s;
+    }
+    function mRow(s,isFr,isHome){
+      const r=resolveSlot(s);
+      const lbl=slotLabelLocal(s);
+      const score=sc_ko?(isHome?sc_ko.home:sc_ko.away):null;
+      if(r){
+        return`<div class="bm-team">
+          <div class="name ${isFr?'fr':''}">${r.flag} ${r.name.length>16?r.name.slice(0,16)+'…':r.name}${!r.confirmed?'<span style="opacity:.4;font-size:9px;margin-left:2px">~</span>':''}</div>
+          <div class="sc ${score===null?'tbd':''}">${score!==null?score:'–'}</div>
+        </div>${lbl?`<div class="bm-slot">${lbl}</div>`:''}`;
+      }
+      const dl=lbl||fmtSlot(s);
+      return`<div class="bm-team"><div class="name" style="color:rgba(255,255,255,.3);font-style:italic;font-size:11px">${dl}</div><div class="sc tbd">–</div></div>`;
+    }
+    return`<div class="bm-card ${(fr1||fr2)?'fr-m':''}">${mRow(sm.home,fr1,true)}<div class="bm-sep"></div>${mRow(sm.away,fr2,false)}</div>`;
+  }
+
+  function buildMobileSide(cols,smObj){
+    let html='';
+    cols.forEach((col,ci)=>{
+      html+=`<div class="bm-round"><div class="bm-round-label">${col.label}</div>`;
+      col.rds.forEach(rid=>{html+=makeMobileMatch(smObj[rid],rid,col.label);});
+      html+='</div>';
+      if(ci<cols.length-1)html+='<div class="bm-arrow">▼</div>';
+    });
+    return html;
+  }
+
+  // Finale mobile
+  const finalMobile=`<div class="bm-arrow">▼</div><div class="bm-final">
+    <div class="bm-final-title">🏆 FINALE · 19 JUILLET</div>
+    ${makeMobileMatch(SM.final,'final','Finale')}
+  </div>`;
+
+  document.getElementById('bracket-mobile-L').innerHTML=buildMobileSide(LC,SM)+finalMobile;
+  document.getElementById('bracket-mobile-R').innerHTML=buildMobileSide(RC,SM)+finalMobile;
 }
+
+let bracketTab='R';
+function setBracketTab(side){
+  bracketTab=side;
+  document.getElementById('btab-L').classList.toggle('active',side==='L');
+  document.getElementById('btab-R').classList.toggle('active',side==='R');
+  document.getElementById('bracket-mobile-L').style.display=side==='L'?'block':'none';
+  document.getElementById('bracket-mobile-R').style.display=side==='R'?'block':'none';
+}
+// Initialise sur le côté France (R) par défaut
+document.addEventListener('DOMContentLoaded',()=>setBracketTab('R'));
 
 // ════════════════════════════════════════════════════════
 // RENDER FRANCE
