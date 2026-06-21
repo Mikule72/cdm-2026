@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🏆 FIFA World Cup 2026 — Suivi des Bleus</title>
+<title>FIFA World Cup 2026 — Suivi des Bleus</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anton&family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
 <style>
@@ -170,23 +170,21 @@ main{position:relative;z-index:5;padding:20px 14px 80px;max-width:1700px;margin:
 .leg-dot{width:10px;height:10px;border-radius:50%}
 .leg-q{background:#00D25A}.leg-p{background:#FF9B00}.leg-e{background:#DC3232}
 /* ── REFRESH ANIMATION ── */
-.ref-overlay{display:none;position:fixed;inset:0;background:rgba(5,8,28,.92);backdrop-filter:blur(22px);z-index:4000;flex-direction:column;align-items:center;justify-content:center;gap:18px}
+/* ── REFRESH OVERLAY ── */
+.ref-overlay{display:none;position:fixed;inset:0;background:rgba(5,8,28,.88);backdrop-filter:blur(28px);z-index:4000;flex-direction:column;align-items:center;justify-content:center;gap:0}
 .ref-overlay.on{display:flex}
-.ref-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:4px;color:var(--gold);display:flex;align-items:center;gap:12px}
-.ref-robot{font-size:38px;display:inline-block;animation:robothop .6s ease-in-out infinite alternate}
-@keyframes robothop{from{transform:translateY(0) rotate(-5deg)}to{transform:translateY(-8px) rotate(5deg)}}
-.ref-steps{display:flex;flex-direction:column;gap:8px;min-width:340px}
-.rs{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--glass);border:1px solid rgba(255,255,255,.06);border-radius:9px;font-size:12px;color:var(--dim);opacity:.4;transition:all .5s;position:relative;overflow:hidden}
-.rs.active{opacity:1;border-color:rgba(200,168,75,.35);color:var(--white)}
-.rs.active::after{content:'';position:absolute;bottom:0;left:-100%;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--gold));animation:rsbar .8s linear infinite}
-@keyframes rsbar{to{left:100%}}
-.rs.done{opacity:1;border-color:rgba(0,210,90,.35);color:#00D25A;background:rgba(0,210,90,.06)}
-.rs-icon{font-size:16px;width:22px;text-align:center;flex-shrink:0}
-.rs-dots{display:inline-block;animation:dots 1.2s steps(4,end) infinite}
-@keyframes dots{0%{content:'';}25%{content:'.';}50%{content:'..';}75%,100%{content:'...'}}
-.rs-dots::after{content:''}
-.ref-bar-bg{width:340px;height:5px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden;margin-top:4px}
-.ref-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--fr-blue),var(--gold),var(--fr-red));border-radius:10px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+@keyframes trophy-float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-18px) scale(1.04)}}
+@keyframes trophy-glow{0%,100%{filter:drop-shadow(0 0 18px rgba(200,168,75,.4)) drop-shadow(0 0 40px rgba(200,168,75,.15))}50%{filter:drop-shadow(0 0 40px rgba(200,168,75,.9)) drop-shadow(0 0 80px rgba(200,168,75,.4))}}
+@keyframes ring-pulse{0%{transform:scale(.8);opacity:.7}100%{transform:scale(2.2);opacity:0}}
+@keyframes bar-sweep{0%{width:0%}100%{width:100%}}
+.ref-trophy-wrap{position:relative;width:180px;height:220px;display:flex;align-items:center;justify-content:center;margin-bottom:32px}
+.ref-trophy-img{width:150px;height:auto;animation:trophy-float 2s ease-in-out infinite,trophy-glow 2s ease-in-out infinite;position:relative;z-index:2}
+.ref-ring{position:absolute;width:120px;height:120px;border-radius:50%;border:2px solid rgba(200,168,75,.5);top:50%;left:50%;margin:-60px 0 0 -60px;animation:ring-pulse 1.8s ease-out infinite}
+.ref-ring:nth-child(2){animation-delay:.6s}
+.ref-ring:nth-child(3){animation-delay:1.2s}
+.ref-label{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:5px;color:rgba(200,168,75,.7);margin-bottom:24px}
+.ref-bar-bg{width:200px;height:3px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden}
+.ref-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--fr-blue),var(--gold),var(--fr-red));border-radius:10px;transition:width .5s cubic-bezier(.4,0,.2,1)}
 ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:rgba(255,255,255,.02)}
 ::-webkit-scrollbar-thumb{background:rgba(200,168,75,.3);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:rgba(200,168,75,.5)}
 @media(max-width:768px){.groups-grid{grid-template-columns:1fr}.nb{padding:11px 12px;font-size:14px;letter-spacing:1px}.mc-flag{font-size:34px}.mc-name{font-size:16px}.sc-num{font-size:40px}}
@@ -362,13 +360,13 @@ main{position:relative;z-index:5;padding:20px 14px 80px;max-width:1700px;margin:
 
 <!-- Refresh animation overlay -->
 <div class="ref-overlay" id="ref-overlay">
-  <div class="ref-title"><span class="ref-robot">🤖</span> MISE À JOUR EN COURS</div>
-  <div class="ref-steps">
-    <div class="rs" id="rs1" data-icon="📡"><span class="rs-icon">📡</span><span id="rs1-txt">Connexion aux serveurs FIFA<span class="rs-dots"></span></span></div>
-    <div class="rs" id="rs2" data-icon="⚽"><span class="rs-icon">⚽</span><span id="rs2-txt">Récupération des scores en direct<span class="rs-dots"></span></span></div>
-    <div class="rs" id="rs3" data-icon="📊"><span class="rs-icon">📊</span><span id="rs3-txt">Recalcul des classements<span class="rs-dots"></span></span></div>
-    <div class="rs" id="rs4" data-icon="🇫🇷"><span class="rs-icon">🇫🇷</span><span id="rs4-txt">Mise à jour du chemin des Bleus<span class="rs-dots"></span></span></div>
+  <div class="ref-trophy-wrap">
+    <div class="ref-ring"></div>
+    <div class="ref-ring"></div>
+    <div class="ref-ring"></div>
+    <img class="ref-trophy-img" src="trophy.png" alt="FIFA World Cup Trophy">
   </div>
+  <div class="ref-label">MISE À JOUR EN COURS</div>
   <div class="ref-bar-bg"><div class="ref-bar-fill" id="ref-bar"></div></div>
 </div>
 
@@ -994,27 +992,12 @@ function buildTeamMatchMap(){
 function refreshAll(){
   const overlay=document.getElementById('ref-overlay');
   const bar=document.getElementById('ref-bar');
-  const stepIds=['rs1','rs2','rs3','rs4'];
-  stepIds.forEach(id=>{
-    const el=document.getElementById(id);
-    el.classList.remove('active','done');
-    el.querySelector('.rs-icon').textContent=el.dataset.icon;
-  });
-  bar.style.width='0%';
   bar.style.transition='none';
+  bar.style.width='0%';
   overlay.classList.add('on');
+  // Barre de progression animée en continu pendant le fetch
+  setTimeout(()=>{bar.style.transition='width 2.8s cubic-bezier(.4,0,.6,1)';bar.style.width='85%';},30);
 
-  const delays=[0,700,1400,2100];
-  stepIds.forEach((id,i)=>{
-    setTimeout(()=>{
-      if(i>0){const prev=document.getElementById(stepIds[i-1]);prev.classList.remove('active');prev.classList.add('done');prev.querySelector('.rs-icon').textContent='✅';}
-      document.getElementById(id).classList.add('active');
-      bar.style.transition='width .5s cubic-bezier(.4,0,.2,1)';
-      bar.style.width=((i+1)/stepIds.length*100)+'%';
-    },delays[i]);
-  });
-
-  // Appel API réel
   const apiUrl=window.location.hostname==='localhost'||window.location.hostname==='127.0.0.1'
     ?'https://cdm-2026-bleus.vercel.app/api/scores'
     :'/api/scores';
@@ -1042,31 +1025,17 @@ function refreshAll(){
         });
         saveScores();
       }
-      // Finalise animation puis affiche résultats
+      bar.style.transition='width .4s ease';bar.style.width='100%';
       setTimeout(()=>{
-        const last=document.getElementById(stepIds[stepIds.length-1]);
-        last.classList.remove('active');last.classList.add('done');last.querySelector('.rs-icon').textContent='✅';
-        bar.style.width='100%';
-        setTimeout(()=>{
-          overlay.classList.remove('on');
-          renderAll();
-          if(newKeys.length>0){
-            highlightNewScores(newKeys);
-            showToast(`🆕 ${newKeys.length} nouveau${newKeys.length>1?'x':''} score${newKeys.length>1?'s':''} !`);
-          } else {
-            showToast('✅ Tout est à jour !');
-          }
-        },500);
-      },2800);
+        overlay.classList.remove('on');
+        renderAll();
+        if(newKeys.length>0){highlightNewScores(newKeys);showToast(`🆕 ${newKeys.length} nouveau${newKeys.length>1?'x':''} score${newKeys.length>1?'s':''} !`);}
+        else showToast('✅ Tout est à jour !');
+      },500);
     })
     .catch(()=>{
-      // Fallback si API indisponible
-      setTimeout(()=>{
-        const last=document.getElementById(stepIds[stepIds.length-1]);
-        last.classList.remove('active');last.classList.add('done');last.querySelector('.rs-icon').textContent='⚠️';
-        bar.style.width='100%';
-        setTimeout(()=>{overlay.classList.remove('on');renderAll();showToast('⚠️ Connexion impossible');},500);
-      },2800);
+      bar.style.transition='width .4s ease';bar.style.width='100%';
+      setTimeout(()=>{overlay.classList.remove('on');renderAll();showToast('⚠️ Connexion impossible');},500);
     });
 }
 
