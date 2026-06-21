@@ -557,7 +557,7 @@ function resolveSlot(slot){
 
 function isFranceSlot(slot){
   if(!slot)return false;
-  if(slot==='France'||slot==='1I'||slot==='2I')return true;
+  if(slot==='France')return true;
   const r=resolveSlot(slot);return!!(r&&r.name==='France');
 }
 
