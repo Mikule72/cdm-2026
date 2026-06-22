@@ -697,14 +697,14 @@ function renderBracket(){
   }
 
   const LC=[
-    {label:"32ES DE FINALE",rds:["r32_1","r32_2","r32_3","r32_4","r32_5","r32_6","r32_7","r32_8"]},
-    {label:"16ES DE FINALE",rds:["r16_L1","r16_L2","r16_L3","r16_L4"]},
+    {label:"16ES DE FINALE",rds:["r32_1","r32_2","r32_3","r32_4","r32_5","r32_6","r32_7","r32_8"]},
+    {label:"HUITIÈMES",rds:["r16_L1","r16_L2","r16_L3","r16_L4"]},
     {label:"QUARTS",rds:["qf_L1","qf_L2"]},
     {label:"DEMI-FINALE",rds:["sf_L"]}
   ];
   const RC=[
-    {label:"32ES DE FINALE",rds:["r32_9","r32_10","r32_11","r32_12","r32_13","r32_14","r32_15","r32_16"]},
-    {label:"16ES DE FINALE",rds:["r16_R1","r16_R2","r16_R3","r16_R4"]},
+    {label:"16ES DE FINALE",rds:["r32_9","r32_10","r32_11","r32_12","r32_13","r32_14","r32_15","r32_16"]},
+    {label:"HUITIÈMES",rds:["r16_R1","r16_R2","r16_R3","r16_R4"]},
     {label:"QUARTS",rds:["qf_R1","qf_R2"]},
     {label:"DEMI-FINALE",rds:["sf_R"]}
   ];
@@ -845,8 +845,8 @@ function renderFrance(){
   const frSt=calcStandings('I'),frRank=frSt.findIndex(s=>s.name==='France')+1;
   const elim=frRank>2&&frSt[0].j===3;
   const koPh=[
-    {l:"32ES DE FINALE",icon:"🔓",opp:"3e Grp C/D/E",d:"~5 juillet 2026"},
-    {l:"16ES DE FINALE",icon:"🔓",opp:"Vainqueur R32",d:"~13 juillet 2026"},
+    {l:"16ES DE FINALE",icon:"🔓",opp:"3e Grp C/D/E",d:"~28 juin 2026"},
+    {l:"HUITIÈMES",icon:"🔓",opp:"Vainqueur 16e",d:"~5 juillet 2026"},
     {l:"QUART DE FINALE",icon:"🔓",opp:"Vainqueur R16",d:"~17 juillet 2026"},
     {l:"DEMI-FINALE",icon:"🔓",opp:"Vainqueur QF",d:"~22 juillet 2026"},
     {l:"🏆 FINALE",icon:"🏆",opp:"Vainqueur SF",d:"19 juillet 2026 · MetLife Stadium"},
