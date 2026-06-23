@@ -320,8 +320,8 @@ main{position:relative;z-index:5;padding:20px 14px 80px;max-width:1700px;margin:
   <p style="font-size:11px;color:var(--dim);margin-bottom:14px">🇫🇷 Chemin France en or · Qualifiés projetés en italique · 🤖 Scores mis à jour automatiquement</p>
   <!-- Sous-onglets mobiles -->
   <div class="bracket-tabs" id="bracket-tabs">
-    <button class="btab active" id="btab-L" onclick="setBracketTab('L')">⬅ TABLEAU 1</button>
-    <button class="btab" id="btab-R" onclick="setBracketTab('R')">TABLEAU 2 🇫🇷</button>
+    <button class="btab active" id="btab-L" onclick="setBracketTab('L')">TABLEAU 1 🇫🇷</button>
+    <button class="btab" id="btab-R" onclick="setBracketTab('R')">TABLEAU 2 ➡</button>
   </div>
   <!-- Desktop : tableau horizontal -->
   <div class="bracket-scroll"><div class="bracket-wrap" id="bracket-wrap"></div></div>
@@ -503,16 +503,25 @@ const FRANCE_MATCHES=[
    date:"2026-06-26T21:00:00Z",venue:"Levi's Stadium, San José",probHome:28,probAway:72,awayIsFrance:true},
 ];
 
-// Bracket R32 pairings (official FIFA WC2026)
+// Bracket 16es de finale — source officielle FIFA WC2026 (M73-M88)
+// Côté L = France (M77: 1I / M78: 2I)
 const R32=[
-  {id:"r32_1", home:"1A",away:"2B",side:"L"},{id:"r32_2", home:"1C",away:"3ABF",side:"L"},
-  {id:"r32_3", home:"1B",away:"3ACD",side:"L"},{id:"r32_4", home:"2A",away:"2C",side:"L"},
-  {id:"r32_5", home:"1D",away:"2E",side:"L"},{id:"r32_6", home:"1F",away:"3DEF",side:"L"},
-  {id:"r32_7", home:"1E",away:"3CDE",side:"L"},{id:"r32_8", home:"2D",away:"2F",side:"L"},
-  {id:"r32_9", home:"1G",away:"2H",side:"R"},{id:"r32_10",home:"1J",away:"3GHL",side:"R"},
-  {id:"r32_11",home:"1H",away:"3GIJ",side:"R"},{id:"r32_12",home:"2G",away:"2J",side:"R"},
-  {id:"r32_13",home:"1K",away:"2L",side:"R"},{id:"r32_14",home:"1I",away:"3IJK",side:"R"},
-  {id:"r32_15",home:"1L",away:"3JKL",side:"R"},{id:"r32_16",home:"2K",away:"2I",side:"R"},
+  {id:"r32_1", home:"2A",  away:"2B",    side:"L"},  // M73
+  {id:"r32_2", home:"1E",  away:"3ABCDF",side:"L"},  // M74 — Allemagne
+  {id:"r32_3", home:"1F",  away:"2C",    side:"L"},  // M75
+  {id:"r32_4", home:"1C",  away:"2F",    side:"L"},  // M76
+  {id:"r32_5", home:"1I",  away:"3CDFGH",side:"L"},  // M77 — France 1I
+  {id:"r32_6", home:"2E",  away:"2I",    side:"L"},  // M78 — France 2I
+  {id:"r32_7", home:"1A",  away:"3CEFHI",side:"L"},  // M79 — Mexique
+  {id:"r32_8", home:"1L",  away:"3EHIJK",side:"L"},  // M80
+  {id:"r32_9", home:"1D",  away:"3BEFIJ",side:"R"},  // M81 — USA
+  {id:"r32_10",home:"1G",  away:"3AEHIJ",side:"R"},  // M82 — Belgique
+  {id:"r32_11",home:"2K",  away:"2L",    side:"R"},  // M83
+  {id:"r32_12",home:"1H",  away:"2J",    side:"R"},  // M84 — Espagne
+  {id:"r32_13",home:"1B",  away:"3EFGIJ",side:"R"},  // M85 — Canada
+  {id:"r32_14",home:"1J",  away:"2H",    side:"R"},  // M86 — Argentine
+  {id:"r32_15",home:"1K",  away:"3DEIJL",side:"R"},  // M87 — Portugal
+  {id:"r32_16",home:"2D",  away:"2G",    side:"R"},  // M88
 ];
 
 // ════════════════════════════════════════════════════════
@@ -627,10 +636,10 @@ function renderGroups(){
 // ════════════════════════════════════════════════════════
 // RENDER BRACKET
 // ════════════════════════════════════════════════════════
-const ML={r32_1:'M49',r32_2:'M50',r32_3:'M51',r32_4:'M52',r32_5:'M53',r32_6:'M54',r32_7:'M55',r32_8:'M56',
-  r32_9:'M57',r32_10:'M58',r32_11:'M59',r32_12:'M60',r32_13:'M61',r32_14:'M62',r32_15:'M63',r32_16:'M64',
-  r16_L1:'M65',r16_L2:'M66',r16_L3:'M67',r16_L4:'M68',r16_R1:'M69',r16_R2:'M70',r16_R3:'M71',r16_R4:'M72',
-  qf_L1:'QF1',qf_L2:'QF2',qf_R1:'QF3',qf_R2:'QF4',sf_L:'SF1',sf_R:'SF2'};
+const ML={r32_1:'M73',r32_2:'M74',r32_3:'M75',r32_4:'M76',r32_5:'M77',r32_6:'M78',r32_7:'M79',r32_8:'M80',
+  r32_9:'M81',r32_10:'M82',r32_11:'M83',r32_12:'M84',r32_13:'M85',r32_14:'M86',r32_15:'M87',r32_16:'M88',
+  r16_L1:'M89',r16_L2:'M90',r16_L3:'M91',r16_L4:'M92',r16_R1:'M93',r16_R2:'M94',r16_R3:'M95',r16_R4:'M96',
+  qf_L1:'M97',qf_L2:'M98',qf_R1:'M99',qf_R2:'M100',sf_L:'M101',sf_R:'M102',final:'M103'};
 
 function renderBracket(){
   const wrap=document.getElementById('bracket-wrap');
@@ -799,7 +808,7 @@ function renderBracket(){
   document.getElementById('bracket-mobile-R').innerHTML=buildMobileSide(RC,SM)+finalMobile;
 }
 
-let bracketTab='R';
+let bracketTab='L';
 function setBracketTab(side){
   bracketTab=side;
   document.getElementById('btab-L').classList.toggle('active',side==='L');
@@ -808,7 +817,7 @@ function setBracketTab(side){
   document.getElementById('bracket-mobile-R').style.display=side==='R'?'block':'none';
 }
 // Initialise sur le côté France (R) par défaut
-document.addEventListener('DOMContentLoaded',()=>setBracketTab('R'));
+document.addEventListener('DOMContentLoaded',()=>setBracketTab('L'));
 
 // ════════════════════════════════════════════════════════
 // RENDER FRANCE
@@ -845,10 +854,10 @@ function renderFrance(){
   const frSt=calcStandings('I'),frRank=frSt.findIndex(s=>s.name==='France')+1;
   const elim=frRank>2&&frSt[0].j===3;
   const koPh=[
-    {l:"16ES DE FINALE",icon:"🔓",opp:"3e Grp C/D/E",d:"~28 juin 2026"},
-    {l:"HUITIÈMES",icon:"🔓",opp:"Vainqueur 16e",d:"~5 juillet 2026"},
-    {l:"QUART DE FINALE",icon:"🔓",opp:"Vainqueur R16",d:"~17 juillet 2026"},
-    {l:"DEMI-FINALE",icon:"🔓",opp:"Vainqueur QF",d:"~22 juillet 2026"},
+    {l:"16ES DE FINALE",icon:"🔓",opp:"Si 1I : 3e C/D/F/G/H · Si 2I : 2e Grp E",d:"~30 juin 2026"},
+    {l:"HUITIÈMES",icon:"🔓",opp:"Vainqueur M77 ou M78",d:"~5 juillet 2026"},
+    {l:"QUART DE FINALE",icon:"🔓",opp:"Vainqueur M91",d:"~11 juillet 2026"},
+    {l:"DEMI-FINALE",icon:"🔓",opp:"Vainqueur QF côté gauche",d:"~15 juillet 2026"},
     {l:"🏆 FINALE",icon:"🏆",opp:"Vainqueur SF",d:"19 juillet 2026 · MetLife Stadium"},
   ];
   koPh.forEach(p=>{
