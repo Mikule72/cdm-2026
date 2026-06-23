@@ -586,19 +586,20 @@ function resolveSlot(slot){
   const m=slot.match(/^([123])(.*)/);if(!m)return null;
   const[,posStr,rest]=m,pos=parseInt(posStr);
   if(rest.length===1&&GROUPS[rest]){
+    // N'afficher que si le groupe est terminé
+    if(!groupComplete(rest))return null;
     const st=calcStandings(rest);
     const team=st[pos-1];if(!team)return null;
-    const confirmed=groupComplete(rest)||(team.j>0&&team.pts>=6);
-    // Only show projected if at least 1 match played
-    if(team.j===0)return null;
-    return{name:team.name,flag:FLAGS[team.name]||'🌍',confirmed};
+    return{name:team.name,flag:FLAGS[team.name]||'🌍',confirmed:true};
   }
   if(pos===3&&rest.length>1){
-    const grps=rest.split('');
-    const thirds=grps.filter(g=>GROUPS[g]).map(g=>{const st=calcStandings(g);return{...st[2],group:g};});
+    const grps=rest.split('').filter(g=>GROUPS[g]);
+    // N'afficher que si tous les groupes concernés sont terminés
+    if(!grps.every(g=>groupComplete(g)))return null;
+    const thirds=grps.map(g=>{const st=calcStandings(g);return{...st[2],group:g};});
     thirds.sort((a,b)=>b.pts-a.pts||b.diff-a.diff||b.bp-a.bp);
-    const team=thirds[0];if(!team||team.j===0)return null;
-    return{name:team.name,flag:FLAGS[team.name]||'🌍',confirmed:false};
+    const team=thirds[0];if(!team)return null;
+    return{name:team.name,flag:FLAGS[team.name]||'🌍',confirmed:true};
   }
   return null;
 }
