@@ -503,25 +503,30 @@ const FRANCE_MATCHES=[
    date:"2026-06-26T21:00:00Z",venue:"Levi's Stadium, San José",probHome:28,probAway:72,awayIsFrance:true},
 ];
 
-// Bracket 16es de finale — source officielle FIFA WC2026 (M73-M88)
-// Côté L = France (M77: 1I / M78: 2I)
+// Bracket 16es de finale — source officielle FIFA WC2026
+// Ordre visuel = paires consécutives → huitièmes, puis QF, puis SF, puis Finale
+// L = branche → SF M101 | R = branche → SF M102
+// France 1I → r32_4 (L), face Allemagne au huitième si passage
+// France 2I → r32_10 (R)
 const R32=[
-  {id:"r32_1", home:"2A",  away:"2B",    side:"L"},  // M73
-  {id:"r32_2", home:"1E",  away:"3ABCDF",side:"L"},  // M74 — Allemagne
-  {id:"r32_3", home:"1F",  away:"2C",    side:"L"},  // M75
-  {id:"r32_4", home:"1C",  away:"2F",    side:"L"},  // M76
-  {id:"r32_5", home:"1I",  away:"3CDFGH",side:"L"},  // M77 — France 1I
-  {id:"r32_6", home:"2E",  away:"2I",    side:"L"},  // M78 — France 2I
-  {id:"r32_7", home:"1A",  away:"3CEFHI",side:"L"},  // M79 — Mexique
-  {id:"r32_8", home:"1L",  away:"3EHIJK",side:"L"},  // M80
-  {id:"r32_9", home:"1D",  away:"3BEFIJ",side:"R"},  // M81 — USA
-  {id:"r32_10",home:"1G",  away:"3AEHIJ",side:"R"},  // M82 — Belgique
-  {id:"r32_11",home:"2K",  away:"2L",    side:"R"},  // M83
-  {id:"r32_12",home:"1H",  away:"2J",    side:"R"},  // M84 — Espagne
-  {id:"r32_13",home:"1B",  away:"3EFGIJ",side:"R"},  // M85 — Canada
-  {id:"r32_14",home:"1J",  away:"2H",    side:"R"},  // M86 — Argentine
-  {id:"r32_15",home:"1K",  away:"3DEIJL",side:"R"},  // M87 — Portugal
-  {id:"r32_16",home:"2D",  away:"2G",    side:"R"},  // M88
+  // CÔTÉ GAUCHE → QF M97+M98 → SF M101
+  {id:"r32_1", home:"2A",   away:"2B",    side:"L"},  // M73 ─┐ huitième M89
+  {id:"r32_2", home:"1F",   away:"2C",    side:"L"},  // M75 ─┘
+  {id:"r32_3", home:"1E",   away:"3ABCDF",side:"L"},  // M74 ─┐ huitième M90
+  {id:"r32_4", home:"1I",   away:"3CDFGH",side:"L"},  // M77 ─┘ (France 1I)
+  {id:"r32_5", home:"2K",   away:"2L",    side:"L"},  // M83 ─┐ huitième M93
+  {id:"r32_6", home:"1H",   away:"2J",    side:"L"},  // M84 ─┘ (Espagne)
+  {id:"r32_7", home:"1D",   away:"3BEFIJ",side:"L"},  // M81 ─┐ huitième M94
+  {id:"r32_8", home:"1G",   away:"3AEHIJ",side:"L"},  // M82 ─┘ (USA / Belgique)
+  // CÔTÉ DROIT → QF M99+M100 → SF M102
+  {id:"r32_9", home:"1C",   away:"2F",    side:"R"},  // M76 ─┐ huitième M91
+  {id:"r32_10",home:"2E",   away:"2I",    side:"R"},  // M78 ─┘ (France 2I)
+  {id:"r32_11",home:"1A",   away:"3CEFHI",side:"R"},  // M79 ─┐ huitième M92
+  {id:"r32_12",home:"1L",   away:"3EHIJK",side:"R"},  // M80 ─┘ (Mexique)
+  {id:"r32_13",home:"1J",   away:"2H",    side:"R"},  // M86 ─┐ huitième M95
+  {id:"r32_14",home:"2D",   away:"2G",    side:"R"},  // M88 ─┘ (Argentine)
+  {id:"r32_15",home:"1B",   away:"3EFGIJ",side:"R"},  // M85 ─┐ huitième M96
+  {id:"r32_16",home:"1K",   away:"3DEIJL",side:"R"},  // M87 ─┘ (Canada / Portugal)
 ];
 
 // ════════════════════════════════════════════════════════
@@ -636,10 +641,15 @@ function renderGroups(){
 // ════════════════════════════════════════════════════════
 // RENDER BRACKET
 // ════════════════════════════════════════════════════════
-const ML={r32_1:'M73',r32_2:'M74',r32_3:'M75',r32_4:'M76',r32_5:'M77',r32_6:'M78',r32_7:'M79',r32_8:'M80',
-  r32_9:'M81',r32_10:'M82',r32_11:'M83',r32_12:'M84',r32_13:'M85',r32_14:'M86',r32_15:'M87',r32_16:'M88',
-  r16_L1:'M89',r16_L2:'M90',r16_L3:'M91',r16_L4:'M92',r16_R1:'M93',r16_R2:'M94',r16_R3:'M95',r16_R4:'M96',
-  qf_L1:'M97',qf_L2:'M98',qf_R1:'M99',qf_R2:'M100',sf_L:'M101',sf_R:'M102',final:'M103'};
+const ML={
+  r32_1:'M73',r32_2:'M75',r32_3:'M74',r32_4:'M77',  // côté L haut
+  r32_5:'M83',r32_6:'M84',r32_7:'M81',r32_8:'M82',  // côté L bas
+  r32_9:'M76',r32_10:'M78',r32_11:'M79',r32_12:'M80', // côté R haut
+  r32_13:'M86',r32_14:'M88',r32_15:'M85',r32_16:'M87', // côté R bas
+  r16_L1:'M89',r16_L2:'M90',r16_L3:'M93',r16_L4:'M94',
+  r16_R1:'M91',r16_R2:'M92',r16_R3:'M95',r16_R4:'M96',
+  qf_L1:'M97',qf_L2:'M98',qf_R1:'M99',qf_R2:'M100',
+  sf_L:'M101',sf_R:'M102',final:'M103'};
 
 function renderBracket(){
   const wrap=document.getElementById('bracket-wrap');
