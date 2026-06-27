@@ -442,55 +442,90 @@ const GROUP_MATCHES={
 // ════════════════════════════════════════════════════════
 // SCORES PRÉ-CHARGÉS (résultats officiels FIFA WC 2026)
 // ════════════════════════════════════════════════════════
+// Scores officiels ESPN — home/away calés sur GROUP_MATCHES (premier idx = home)
+// Les J3 de J/K/L manquants seront chargés via ACTUALISER (ESPN)
 const PRELOADED={
-  // Groupe A
+  // Groupe A [0=Mexique, 1=Afrique du Sud, 2=Corée du Sud, 3=Tchéquie]
   "A_0":{home:2,away:0},   // Mexique 2-0 Afrique du Sud
   "A_1":{home:2,away:1},   // Corée du Sud 2-1 Tchéquie
   "A_2":{home:1,away:0},   // Mexique 1-0 Corée du Sud
-  "A_3":{home:0,away:2},   // Afrique du Sud 0-2 Tchéquie
-  // Groupe B
+  "A_3":{home:1,away:1},   // Afrique du Sud 1-1 Tchéquie
+  "A_4":{home:3,away:0},   // Mexique 3-0 Tchéquie
+  "A_5":{home:1,away:0},   // Afrique du Sud 1-0 Corée du Sud
+  // Groupe B [0=Canada, 1=Bosnie, 2=Qatar, 3=Suisse]
   "B_0":{home:1,away:1},   // Canada 1-1 Bosnie
   "B_1":{home:1,away:1},   // Qatar 1-1 Suisse
   "B_2":{home:6,away:0},   // Canada 6-0 Qatar
   "B_3":{home:1,away:4},   // Bosnie 1-4 Suisse
-  // Groupe C
+  "B_4":{home:1,away:2},   // Canada 1-2 Suisse
+  "B_5":{home:3,away:1},   // Bosnie 3-1 Qatar
+  // Groupe C [0=Brésil, 1=Maroc, 2=Haïti, 3=Écosse]
   "C_0":{home:1,away:1},   // Brésil 1-1 Maroc
   "C_1":{home:0,away:1},   // Haïti 0-1 Écosse
   "C_2":{home:3,away:0},   // Brésil 3-0 Haïti
-  "C_3":{home:0,away:2},   // Maroc 0-2 Écosse
-  // Groupe D
+  "C_3":{home:1,away:0},   // Maroc 1-0 Écosse
+  "C_4":{home:3,away:0},   // Brésil 3-0 Écosse
+  "C_5":{home:4,away:2},   // Maroc 4-2 Haïti
+  // Groupe D [0=USA, 1=Paraguay, 2=Australie, 3=Turquie]
   "D_0":{home:4,away:1},   // USA 4-1 Paraguay
   "D_1":{home:2,away:0},   // Australie 2-0 Turquie
   "D_2":{home:2,away:0},   // USA 2-0 Australie
   "D_3":{home:1,away:0},   // Paraguay 1-0 Turquie
-  // Groupe E
+  "D_4":{home:2,away:3},   // USA 2-3 Turquie
+  "D_5":{home:0,away:0},   // Paraguay 0-0 Australie
+  // Groupe E [0=Allemagne, 1=Curaçao, 2=Côte d'Ivoire, 3=Équateur]
   "E_0":{home:7,away:1},   // Allemagne 7-1 Curaçao
   "E_1":{home:1,away:0},   // Côte d'Ivoire 1-0 Équateur
   "E_2":{home:2,away:1},   // Allemagne 2-1 Côte d'Ivoire
   "E_3":{home:0,away:0},   // Curaçao 0-0 Équateur
-  // Groupe F
+  "E_4":{home:1,away:2},   // Allemagne 1-2 Équateur
+  "E_5":{home:0,away:2},   // Curaçao 0-2 Côte d'Ivoire
+  // Groupe F [0=Pays-Bas, 1=Japon, 2=Suède, 3=Tunisie]
   "F_0":{home:2,away:2},   // Pays-Bas 2-2 Japon
   "F_1":{home:5,away:1},   // Suède 5-1 Tunisie
   "F_2":{home:5,away:1},   // Pays-Bas 5-1 Suède
-  "F_3":{home:4,away:1},   // Japon 4-1 Tunisie
-  // Groupe G
+  "F_3":{home:4,away:0},   // Japon 4-0 Tunisie
+  "F_4":{home:3,away:1},   // Pays-Bas 3-1 Tunisie
+  "F_5":{home:1,away:1},   // Japon 1-1 Suède
+  // Groupe G [0=Belgique, 1=Égypte, 2=Iran, 3=Nouvelle-Zélande]
   "G_0":{home:1,away:1},   // Belgique 1-1 Égypte
   "G_1":{home:2,away:2},   // Iran 2-2 Nouvelle-Zélande
-  // Groupe H
+  "G_2":{home:0,away:0},   // Belgique 0-0 Iran
+  "G_3":{home:3,away:1},   // Égypte 3-1 Nouvelle-Zélande
+  "G_4":{home:5,away:1},   // Belgique 5-1 Nouvelle-Zélande
+  "G_5":{home:1,away:1},   // Égypte 1-1 Iran
+  // Groupe H [0=Espagne, 1=Cap-Vert, 2=Arabie Saoudite, 3=Uruguay]
   "H_0":{home:0,away:0},   // Espagne 0-0 Cap-Vert
   "H_1":{home:1,away:1},   // Arabie Saoudite 1-1 Uruguay
   "H_2":{home:4,away:0},   // Espagne 4-0 Arabie Saoudite
-  // Groupe I — FRANCE
+  "H_3":{home:2,away:2},   // Cap-Vert 2-2 Uruguay
+  "H_4":{home:1,away:0},   // Espagne 1-0 Uruguay
+  "H_5":{home:0,away:0},   // Cap-Vert 0-0 Arabie Saoudite
+  // Groupe I [0=France, 1=Sénégal, 2=Irak, 3=Norvège] — LES BLEUS ⭐
   "I_0":{home:3,away:1},   // France 3-1 Sénégal ⭐
   "I_1":{home:1,away:4},   // Irak 1-4 Norvège
-  // Groupe J
+  "I_2":{home:3,away:0},   // France 3-0 Irak ⭐
+  "I_3":{home:2,away:3},   // Sénégal 2-3 Norvège
+  "I_4":{home:1,away:4},   // Norvège 1-4 France ⭐
+  "I_5":{home:0,away:5},   // Irak 0-5 Sénégal
+  // Groupe J [0=Argentine, 1=Algérie, 2=Autriche, 3=Jordanie]
   "J_0":{home:3,away:0},   // Argentine 3-0 Algérie
-  "J_1":{home:1,away:3},   // Jordanie 1-3 Autriche
-  // Groupe K
+  "J_1":{home:3,away:1},   // Autriche 3-1 Jordanie
+  "J_2":{home:2,away:0},   // Argentine 2-0 Autriche
+  "J_3":{home:2,away:1},   // Algérie 2-1 Jordanie
+  // J_4 (Argentine vs Jordanie) et J_5 (Algérie vs Autriche) → ESPN via ACTUALISER
+  // Groupe K [0=Portugal, 1=RD Congo, 2=Ouzbékistan, 3=Colombie]
+  "K_0":{home:1,away:1},   // Portugal 1-1 RD Congo
   "K_1":{home:1,away:3},   // Ouzbékistan 1-3 Colombie
-  // Groupe L
+  "K_2":{home:5,away:0},   // Portugal 5-0 Ouzbékistan
+  "K_3":{home:0,away:1},   // RD Congo 0-1 Colombie
+  // K_4 (Portugal vs Colombie) et K_5 (RD Congo vs Ouzbékistan) → ESPN via ACTUALISER
+  // Groupe L [0=Angleterre, 1=Croatie, 2=Ghana, 3=Panama]
   "L_0":{home:4,away:2},   // Angleterre 4-2 Croatie
   "L_1":{home:1,away:0},   // Ghana 1-0 Panama
+  "L_2":{home:0,away:0},   // Angleterre 0-0 Ghana
+  "L_3":{home:1,away:0},   // Croatie 1-0 Panama
+  // L_4 (Angleterre vs Panama) et L_5 (Croatie vs Ghana) → ESPN via ACTUALISER
 };
 
 // France match J3: Norway is HOME (idx 3) vs France (idx 0) → [3,0] in GROUP_MATCHES I_4
@@ -579,6 +614,35 @@ function groupComplete(g){
 // ════════════════════════════════════════════════════════
 // SLOT RESOLVER (returns {name, flag, confirmed})
 // ════════════════════════════════════════════════════════
+// Allocation globale des 3e places — recalculée à chaque renderAll()
+// Évite qu'une même équipe apparaisse dans plusieurs slots 3e place
+const THIRD_SLOT_DEFS=[
+  ["3ABCDF","ABCDF"],["3CDFGH","CDFGH"],["3BEFIJ","BEFIJ"],["3AEHIJ","AEHIJ"],
+  ["3CEFHI","CEFHI"],["3EHIJK","EHIJK"],["3EFGIJ","EFGIJ"],["3DEIJL","DEIJL"]
+];
+let _thirdAlloc=null;
+function buildThirdAlloc(){
+  if(_thirdAlloc)return _thirdAlloc;
+  _thirdAlloc={};
+  // Tous les 3e de groupes complets, classés par pts/diff/bp
+  const allThirds=Object.keys(GROUPS).map(g=>{
+    if(!groupComplete(g))return null;
+    const st=calcStandings(g);
+    return st[2]?{...st[2],group:g}:null;
+  }).filter(Boolean).sort((a,b)=>b.pts-a.pts||b.diff-a.diff||b.bp-a.bp);
+  const used=new Set();
+  for(const[slot,groups]of THIRD_SLOT_DEFS){
+    const grps=groups.split('').filter(g=>GROUPS[g]);
+    // Le slot n'est affiché que si tous ses groupes sont terminés
+    if(!grps.every(g=>groupComplete(g)))continue;
+    for(const t of allThirds){
+      if(used.has(t.name))continue;
+      if(groups.includes(t.group)){_thirdAlloc[slot]=t;used.add(t.name);break;}
+    }
+  }
+  return _thirdAlloc;
+}
+
 function resolveSlot(slot){
   if(!slot)return null;
   if(FLAGS[slot])return{name:slot,flag:FLAGS[slot],confirmed:true};
@@ -586,20 +650,15 @@ function resolveSlot(slot){
   const m=slot.match(/^([123])(.*)/);if(!m)return null;
   const[,posStr,rest]=m,pos=parseInt(posStr);
   if(rest.length===1&&GROUPS[rest]){
-    // N'afficher que si le groupe est terminé
     if(!groupComplete(rest))return null;
     const st=calcStandings(rest);
     const team=st[pos-1];if(!team)return null;
     return{name:team.name,flag:FLAGS[team.name]||'🌍',confirmed:true};
   }
   if(pos===3&&rest.length>1){
-    const grps=rest.split('').filter(g=>GROUPS[g]);
-    // N'afficher que si tous les groupes concernés sont terminés
-    if(!grps.every(g=>groupComplete(g)))return null;
-    const thirds=grps.map(g=>{const st=calcStandings(g);return{...st[2],group:g};});
-    thirds.sort((a,b)=>b.pts-a.pts||b.diff-a.diff||b.bp-a.bp);
-    const team=thirds[0];if(!team)return null;
-    return{name:team.name,flag:FLAGS[team.name]||'🌍',confirmed:true};
+    const t=buildThirdAlloc()['3'+rest];
+    if(!t)return null;
+    return{name:t.name,flag:FLAGS[t.name]||'🌍',confirmed:true};
   }
   return null;
 }
@@ -962,7 +1021,7 @@ function formatDateFR(iso){
 // ════════════════════════════════════════════════════════
 // RENDER ALL + AUTO-REFRESH
 // ════════════════════════════════════════════════════════
-function renderAll(){renderGroups();renderBracket();renderFrance();}
+function renderAll(){_thirdAlloc=null;renderGroups();renderBracket();renderFrance();}
 
 // ESPN displayName → nom interne français
 const ESPN_MAP={
