@@ -526,6 +526,9 @@ const PRELOADED={
   "L_2":{home:0,away:0},   // Angleterre 0-0 Ghana
   "L_3":{home:1,away:0},   // Croatie 1-0 Panama
   // L_4 (Angleterre vs Panama) et L_5 (Croatie vs Ghana) → ESPN via ACTUALISER
+  // ── Phases éliminatoires — résultats confirmés ──
+  "ko_M73":{home:0,away:1},   // Afrique du Sud 0-1 Canada (28/06)
+  "ko_M76":{home:2,away:1},   // Brésil 2-1 Japon (29/06)
 };
 
 // France match J3: Norway is HOME (idx 3) vs France (idx 0) → [3,0] in GROUP_MATCHES I_4
@@ -1141,15 +1144,36 @@ function refreshAll(){
   fetch(apiUrl).then(r=>r.json()).then(data=>{
     if(data.ok&&data.matches){
       const tmMap=buildTeamMatchMap();
+      // Map équipe → {mid, isHome} pour les 16es identifiables par nom d'équipe
+      const koMap={};
+      R32.forEach(r=>{
+        const mid=ML[r.id];
+        const hR=resolveSlot(r.home),aR=resolveSlot(r.away);
+        if(hR)koMap[hR.name]={mid,isHome:true};
+        if(aR)koMap[aR.name]={mid,isHome:false};
+      });
       data.matches.forEach(m=>{
         if(!m.finished||m.homeScore===null)return;
         const h=ESPN_MAP[m.homeTeam]||m.homeTeam;
         const a=ESPN_MAP[m.awayTeam]||m.awayTeam;
-        const entry=tmMap[h]?.[a];if(!entry)return;
-        const {key,swapped}=entry;
-        const hs=swapped?m.awayScore:m.homeScore,as_=swapped?m.homeScore:m.awayScore;
-        const ex=scores[key];
-        if(!ex||ex.home!==hs||ex.away!==as_){scores[key]={home:hs,away:as_};newKeys.push(key);}
+        const entry=tmMap[h]?.[a];
+        if(entry){
+          // Match de groupe
+          const {key,swapped}=entry;
+          const hs=swapped?m.awayScore:m.homeScore,as_=swapped?m.homeScore:m.awayScore;
+          const ex=scores[key];
+          if(!ex||ex.home!==hs||ex.away!==as_){scores[key]={home:hs,away:as_};newKeys.push(key);}
+        } else {
+          // Match éliminatoire — identifier par le nom de l'équipe home ou away
+          const koH=koMap[h],koA=koMap[a];
+          const ko=koH||koA;if(!ko)return;
+          const mid=ko.mid;
+          // koH.isHome=true signifie que h est l'équipe "home" dans notre bracket
+          const hs=koH?m.homeScore:m.awayScore,as_=koH?m.awayScore:m.homeScore;
+          const key='ko_'+mid;
+          const ex=scores[key];
+          if(!ex||ex.home!==hs||ex.away!==as_){scores[key]={home:hs,away:as_};newKeys.push(key);}
+        }
       });
       saveScores();
     }
