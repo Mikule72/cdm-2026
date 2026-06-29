@@ -93,7 +93,7 @@ main{position:relative;z-index:5;padding:20px 14px 80px;max-width:1700px;margin:
 .bm.fr-m{border-color:var(--gold);box-shadow:0 0 14px rgba(200,168,75,.35)}
 .bt{display:flex;align-items:center;gap:5px;padding:6px 8px;font-size:11px;font-weight:500;border-bottom:1px solid rgba(255,255,255,.06);transition:background .2s}
 .bt:last-child{border-bottom:none}
-.bt.win{background:rgba(255,255,255,.07);font-weight:700}.bt.lose{opacity:.35;text-decoration:line-through}
+.bt.win{background:rgba(0,210,90,.12);border-left:3px solid #00D25A;font-weight:700;color:#fff}.bt.lose{opacity:.32;text-decoration:line-through;border-left:3px solid transparent}
 .bt.fr{background:rgba(0,35,149,.45);color:var(--gold);font-weight:700}
 /* projected = known current leader but group not finished */
 .bt.projected{opacity:.55;font-style:italic;font-size:10px}
@@ -722,12 +722,13 @@ function renderBracket(){
   R32.forEach(m=>{SM[m.id]={home:m.home,away:m.away};});
 
   function winner(mid){
-    const sc=getScore('ko_'+mid),sm=SM[mid];if(!sm)return'~?';
-    if(!sc)return`~${ML[mid]||mid}`;
+    const mn=ML[mid]||mid;
+    const sc=getScore('ko_'+mn),sm=SM[mid];if(!sm)return'~?';
+    if(!sc)return`~${mn}`;
     const hR=resolveSlot(sm.home),aR=resolveSlot(sm.away);
     if(sc.home>sc.away)return hR?hR.name:sm.home;
     if(sc.away>sc.home)return aR?aR.name:sm.away;
-    return`~${ML[mid]||mid}`;
+    return`~${mn}`;
   }
 
   SM.r16_L1={home:winner('r32_3'),away:winner('r32_4')};  // M73+M75→M89
@@ -756,7 +757,7 @@ function renderBracket(){
 
   function makeBM(s1,s2,mid,rnd){
     const r1=resolveSlot(s1),r2=resolveSlot(s2);
-    const sc=getScore('ko_'+mid);
+    const sc=getScore('ko_'+(ML[mid]||mid));
     const fr1=isFranceSlot(s1),fr2=isFranceSlot(s2);
     function slotLabel(s){
       if(!s||FLAGS[s])return'';
@@ -800,7 +801,7 @@ function renderBracket(){
     }).join('');
   }
 
-  const fsc=getScore('ko_final');
+  const fsc=getScore('ko_M103');
   const finL=resolveSlot(SM.final.home),finR=resolveSlot(SM.final.away);
   const finalHtml=`<div class="b-final">
     <div class="final-card">
@@ -838,7 +839,7 @@ function renderBracket(){
   function makeMobileMatch(sm,mid,rnd){
     if(!sm)return'';
     const fr1=isFranceSlot(sm.home),fr2=isFranceSlot(sm.away);
-    const sc_ko=getScore('ko_'+mid);
+    const sc_ko=getScore('ko_'+(ML[mid]||mid));
     function slotLabelLocal(s){
       if(!s||FLAGS[s])return'';
       if(s.match(/^[12][A-L]$/))return(s[0]==='1'?'1er ':'2e ')+'Grp '+s[1];
@@ -850,10 +851,15 @@ function renderBracket(){
       const r=resolveSlot(s);
       const lbl=slotLabelLocal(s);
       const score=sc_ko?(isHome?sc_ko.home:sc_ko.away):null;
+      const isWin=sc_ko?(isHome?sc_ko.home>sc_ko.away:sc_ko.away>sc_ko.home):false;
+      const isLose=sc_ko?(isHome?sc_ko.home<sc_ko.away:sc_ko.away<sc_ko.home):false;
       if(r){
-        return`<div class="bm-team">
-          <div class="name ${isFr?'fr':''}">${r.flag} ${r.name.length>16?r.name.slice(0,16)+'…':r.name}${!r.confirmed?'<span style="opacity:.4;font-size:9px;margin-left:2px">~</span>':''}</div>
-          <div class="sc ${score===null?'tbd':''}">${score!==null?score:'–'}</div>
+        const wStyle=isWin?'border-left:3px solid #00D25A;background:rgba(0,210,90,.10);'
+                    :isLose?'border-left:3px solid transparent;opacity:.38;':'';
+        const scStyle=isWin?'color:#00D25A;font-weight:700;':isLose?'':'';
+        return`<div class="bm-team" style="${wStyle}">
+          <div class="name ${isFr?'fr':''}" style="${isLose?'text-decoration:line-through':''}">${r.flag} ${r.name.length>16?r.name.slice(0,16)+'…':r.name}${!r.confirmed?'<span style="opacity:.4;font-size:9px;margin-left:2px">~</span>':''}</div>
+          <div class="sc ${score===null?'tbd':''}" style="${scStyle}">${score!==null?score:'–'}</div>
         </div>${lbl?`<div class="bm-slot">${lbl}</div>`:''}`;
       }
       const dl=lbl||fmtSlot(s);
