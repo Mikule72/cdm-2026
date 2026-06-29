@@ -616,9 +616,11 @@ function groupComplete(g){
 // ════════════════════════════════════════════════════════
 // Allocation globale des 3e places — recalculée à chaque renderAll()
 // Évite qu'une même équipe apparaisse dans plusieurs slots 3e place
+// Ordre calé sur le tableau officiel FIFA WC2026 :
+// 3CDFGH=3F(Suède→France), 3ABCDF=3D(Paraguay→Allemagne), 3BEFIJ=3B(Bosnie→USA)
 const THIRD_SLOT_DEFS=[
-  ["3ABCDF","ABCDF"],["3CDFGH","CDFGH"],["3BEFIJ","BEFIJ"],["3AEHIJ","AEHIJ"],
-  ["3CEFHI","CEFHI"],["3EHIJK","EHIJK"],["3EFGIJ","EFGIJ"],["3DEIJL","DEIJL"]
+  ["3CDFGH","CDFGH"],["3CEFHI","CEFHI"],["3BEFIJ","BEFIJ"],["3AEHIJ","AEHIJ"],
+  ["3ABCDF","ABCDF"],["3EHIJK","EHIJK"],["3EFGIJ","EFGIJ"],["3DEIJL","DEIJL"]
 ];
 let _thirdAlloc=null;
 function buildThirdAlloc(){
@@ -706,8 +708,8 @@ const ML={
   r32_5:'M83',r32_6:'M84',r32_7:'M81',r32_8:'M82',  // côté L bas
   r32_9:'M76',r32_10:'M78',r32_11:'M79',r32_12:'M80', // côté R haut
   r32_13:'M86',r32_14:'M88',r32_15:'M85',r32_16:'M87', // côté R bas
-  r16_L1:'M90',r16_L2:'M89',r16_L3:'M93',r16_L4:'M94',
-  r16_R1:'M91',r16_R2:'M92',r16_R3:'M95',r16_R4:'M96',
+  r16_L1:'M89',r16_L2:'M90',r16_L3:'M94',r16_L4:'M93',
+  r16_R1:'M91',r16_R2:'M92',r16_R3:'M96',r16_R4:'M95',
   qf_L1:'M97',qf_L2:'M98',qf_R1:'M99',qf_R2:'M100',
   sf_L:'M101',sf_R:'M102',final:'M103'};
 
@@ -725,14 +727,14 @@ function renderBracket(){
     return`~${ML[mid]||mid}`;
   }
 
-  SM.r16_L1={home:winner('r32_1'),away:winner('r32_2')};
-  SM.r16_L2={home:winner('r32_3'),away:winner('r32_4')};
-  SM.r16_L3={home:winner('r32_5'),away:winner('r32_6')};
-  SM.r16_L4={home:winner('r32_7'),away:winner('r32_8')};
-  SM.r16_R1={home:winner('r32_9'),away:winner('r32_10')};
-  SM.r16_R2={home:winner('r32_11'),away:winner('r32_12')};
-  SM.r16_R3={home:winner('r32_13'),away:winner('r32_14')};
-  SM.r16_R4={home:winner('r32_15'),away:winner('r32_16')};
+  SM.r16_L1={home:winner('r32_3'),away:winner('r32_4')};  // M73+M75→M89
+  SM.r16_L2={home:winner('r32_1'),away:winner('r32_2')};  // M74+M77→M90
+  SM.r16_L3={home:winner('r32_8'),away:winner('r32_7')};  // M82+M81→M94
+  SM.r16_L4={home:winner('r32_6'),away:winner('r32_5')};  // M84+M83→M93
+  SM.r16_R1={home:winner('r32_9'),away:winner('r32_10')}; // M76+M78→M91
+  SM.r16_R2={home:winner('r32_11'),away:winner('r32_12')};// M79+M80→M92
+  SM.r16_R3={home:winner('r32_15'),away:winner('r32_16')};// M85+M87→M96
+  SM.r16_R4={home:winner('r32_14'),away:winner('r32_13')};// M88+M86→M95
   SM.qf_L1={home:winner('r16_L1'),away:winner('r16_L2')};
   SM.qf_L2={home:winner('r16_L3'),away:winner('r16_L4')};
   SM.qf_R1={home:winner('r16_R1'),away:winner('r16_R2')};
@@ -776,13 +778,13 @@ function renderBracket(){
   }
 
   const LC=[
-    {label:"16ES DE FINALE",rds:["r32_1","r32_2","r32_3","r32_4","r32_5","r32_6","r32_7","r32_8"]},
+    {label:"16ES DE FINALE",rds:["r32_3","r32_4","r32_1","r32_2","r32_8","r32_7","r32_6","r32_5"]},
     {label:"HUITIÈMES",rds:["r16_L1","r16_L2","r16_L3","r16_L4"]},
     {label:"QUARTS",rds:["qf_L1","qf_L2"]},
     {label:"DEMI-FINALE",rds:["sf_L"]}
   ];
   const RC=[
-    {label:"16ES DE FINALE",rds:["r32_9","r32_10","r32_11","r32_12","r32_13","r32_14","r32_15","r32_16"]},
+    {label:"16ES DE FINALE",rds:["r32_9","r32_10","r32_11","r32_12","r32_15","r32_16","r32_14","r32_13"]},
     {label:"HUITIÈMES",rds:["r16_R1","r16_R2","r16_R3","r16_R4"]},
     {label:"QUARTS",rds:["qf_R1","qf_R2"]},
     {label:"DEMI-FINALE",rds:["sf_R"]}
