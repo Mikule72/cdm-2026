@@ -728,6 +728,9 @@ function renderBracket(){
     const hR=resolveSlot(sm.home),aR=resolveSlot(sm.away);
     if(sc.home>sc.away)return hR?hR.name:sm.home;
     if(sc.away>sc.home)return aR?aR.name:sm.away;
+    // Égalité → tirs au but
+    if(sc.pen==='home')return hR?hR.name:sm.home;
+    if(sc.pen==='away')return aR?aR.name:sm.away;
     return`~${mn}`;
   }
 
@@ -1174,9 +1177,12 @@ function refreshAll(){
           const espnHomeIsOurHome=koH?koH.isOurHome:!koA.isOurHome;
           const hs=espnHomeIsOurHome?m.homeScore:m.awayScore;
           const as_=espnHomeIsOurHome?m.awayScore:m.homeScore;
+          // tirs au but : traduire home/away ESPN → home/away bracket
+          let pen=null;
+          if(m.penWinner){pen=(m.penWinner==='home')===espnHomeIsOurHome?'home':'away';}
           const key='ko_'+mid;
           const ex=scores[key];
-          if(!ex||ex.home!==hs||ex.away!==as_){scores[key]={home:hs,away:as_};newKeys.push(key);}
+          if(!ex||ex.home!==hs||ex.away!==as_||ex.pen!==pen){scores[key]={home:hs,away:as_,pen};newKeys.push(key);}
         }
       });
       saveScores();

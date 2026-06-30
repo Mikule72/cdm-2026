@@ -20,13 +20,20 @@ export default async function handler(req, res) {
       const away = competitors.find(c => c.homeAway === 'away');
       if (!home || !away) continue;
       const statusType = comp.status?.type?.name || '';
-      const finished = statusType === 'STATUS_FULL_TIME' || statusType === 'STATUS_END_PERIOD';
+      const finished = ['STATUS_FULL_TIME','STATUS_END_PERIOD','STATUS_FINAL_PEN','STATUS_FINAL_AET','STATUS_FINAL'].includes(statusType);
+      const isPen = statusType === 'STATUS_FINAL_PEN';
+      let penWinner = null;
+      if (isPen) {
+        if (home.winner === true) penWinner = 'home';
+        else if (away.winner === true) penWinner = 'away';
+      }
       results.push({
         date: event.date,
         homeTeam: home.team.displayName,
         awayTeam: away.team.displayName,
         homeScore: finished ? parseInt(home.score, 10) : null,
         awayScore: finished ? parseInt(away.score, 10) : null,
+        penWinner,
         finished,
         status: statusType,
       });
