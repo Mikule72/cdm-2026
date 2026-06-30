@@ -1152,20 +1152,17 @@ function refreshAll(){
 
   fetch(apiUrl).then(r=>r.json()).then(data=>{
     if(data.ok&&data.matches){
-      const tmMap=buildTeamMatchMap();
-      // Map équipe → {mid, isOurHome} pour TOUS les rounds éliminatoires
+      // Construire la map équipe→{mid,isOurHome} pour tous les rounds KO
       const koMap={};
-      // R32 : les slots home/away viennent du tableau R32 (pas de SM pour ces entrées)
       R32.forEach(r=>{
         const mid=ML[r.id];
         const hR=resolveSlot(r.home),aR=resolveSlot(r.away);
         if(hR&&hR.confirmed&&!koMap[hR.name])koMap[hR.name]={mid,isOurHome:true};
         if(aR&&aR.confirmed&&!koMap[aR.name])koMap[aR.name]={mid,isOurHome:false};
       });
-      // R16, QF, SF, Finale : les équipes qualifiées viennent de SM (winner propagation)
       ['r16_L1','r16_L2','r16_L3','r16_L4','r16_R1','r16_R2','r16_R3','r16_R4',
-       'qf_L1','qf_L2','qf_R1','qf_R2','sf_L','sf_R','final'].forEach(slotId=>{
-        const mid=ML[slotId],sm=SM[slotId];if(!mid||!sm)return;
+       'qf_L1','qf_L2','qf_R1','qf_R2','sf_L','sf_R','final'].forEach(sid=>{
+        const mid=ML[sid],sm=SM[sid];if(!mid||!sm)return;
         const hR=resolveSlot(sm.home),aR=resolveSlot(sm.away);
         if(hR&&hR.confirmed&&!koMap[hR.name])koMap[hR.name]={mid,isOurHome:true};
         if(aR&&aR.confirmed&&!koMap[aR.name])koMap[aR.name]={mid,isOurHome:false};
@@ -1174,25 +1171,17 @@ function refreshAll(){
         if(!m.finished||m.homeScore===null)return;
         const h=ESPN_MAP[m.homeTeam]||m.homeTeam;
         const a=ESPN_MAP[m.awayTeam]||m.awayTeam;
-        const entry=tmMap[h]?.[a];
-        if(entry){
-          // Match de groupe — ignoré (poules terminées)
-        } else {
-          // Match éliminatoire
-          const koH=koMap[h],koA=koMap[a];
-          const ko=koH||koA;if(!ko)return;
-          const mid=ko.mid;
-          // Déterminer qui est "home" dans notre bracket
-          const espnHomeIsOurHome=koH?koH.isOurHome:!koA.isOurHome;
-          const hs=espnHomeIsOurHome?m.homeScore:m.awayScore;
-          const as_=espnHomeIsOurHome?m.awayScore:m.homeScore;
-          // tirs au but : traduire home/away ESPN → home/away bracket
-          let pen=null;
-          if(m.penWinner){pen=(m.penWinner==='home')===espnHomeIsOurHome?'home':'away';}
-          const key='ko_'+mid;
-          const ex=scores[key];
-          if(!ex||ex.home!==hs||ex.away!==as_||ex.pen!==pen){scores[key]={home:hs,away:as_,pen};newKeys.push(key);}
-        }
+        const koH=koMap[h],koA=koMap[a];
+        const ko=koH||koA;if(!ko)return;
+        const mid=ko.mid;
+        const espnHomeIsOurHome=koH?koH.isOurHome:!koA.isOurHome;
+        const hs=espnHomeIsOurHome?m.homeScore:m.awayScore;
+        const as_=espnHomeIsOurHome?m.awayScore:m.homeScore;
+        let pen=null;
+        if(m.penWinner){pen=(m.penWinner==='home')===espnHomeIsOurHome?'home':'away';}
+        const key='ko_'+mid;
+        const ex=scores[key];
+        if(!ex||ex.home!==hs||ex.away!==as_||ex.pen!==pen){scores[key]={home:hs,away:as_,pen};newKeys.push(key);}
       });
       saveScores();
     }
