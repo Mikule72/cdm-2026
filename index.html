@@ -300,13 +300,13 @@ main{position:relative;z-index:5;padding:20px 14px 80px;max-width:1700px;margin:
 </header>
 
 <nav>
-  <button class="nb active" onclick="setTab('groupes')" id="nb-groupes">⚽ GROUPES</button>
-  <button class="nb" onclick="setTab('bracket')" id="nb-bracket">🏟 TABLEAU</button>
+  <button class="nb active" onclick="setTab('bracket')" id="nb-bracket">🏟 TABLEAU</button>
   <button class="nb" onclick="setTab('france')" id="nb-france">🇫🇷 FRANCE</button>
+  <button class="nb" onclick="setTab('groupes')" id="nb-groupes" style="opacity:.5;font-size:11px">⚽ GROUPES</button>
 </nav>
 
 <main>
-<div class="tab active" id="tab-groupes">
+<div class="tab" id="tab-groupes">
   <div class="legend">
     <span class="leg-item"><span class="leg-dot leg-q"></span>Qualifié (1er/2e)</span>
     <span class="leg-item"><span class="leg-dot leg-p"></span>Barrage 3e</span>
@@ -315,7 +315,7 @@ main{position:relative;z-index:5;padding:20px 14px 80px;max-width:1700px;margin:
   <div class="groups-grid" id="groups-grid"></div>
 </div>
 
-<div class="tab" id="tab-bracket">
+<div class="tab active" id="tab-bracket">
   <div class="section-title" style="margin-bottom:5px">Tableau de la compétition — Phase éliminatoire</div>
   <p style="font-size:11px;color:var(--dim);margin-bottom:14px">🇫🇷 Chemin France en or · Qualifiés projetés en italique · 🤖 Scores mis à jour automatiquement</p>
   <!-- Sous-onglets mobiles -->
