@@ -775,7 +775,9 @@ function renderBracket(){
       const lbl=slotLabel(s);
       const lblHtml=lbl?`<div style="font-size:8px;opacity:.5;letter-spacing:.5px;margin-top:1px;font-style:italic">${lbl}</div>`:'';
       if(r){
-        const wClass=sc?(isHome?sc.home>sc.away:sc.away>sc.home)?'win':(isHome?sc.home<sc.away:sc.away<sc.home)?'lose':'':'';
+        const homeWins=sc&&(sc.home>sc.away||sc.pen==='home');
+        const awayWins=sc&&(sc.away>sc.home||sc.pen==='away');
+        const wClass=sc?(isHome?homeWins:awayWins)?'win':(isHome?awayWins:homeWins)?'lose':''  :'';
         const projClass=r.confirmed?'':(wClass?'':' projected');
         return`<div class="bt ${isFr?'fr':wClass+projClass}" style="flex-direction:column;align-items:flex-start;gap:0">
           <div style="display:flex;align-items:center;gap:4px;width:100%">${r.flag} <span>${r.name.length>13?r.name.slice(0,13)+'…':r.name}</span>${!r.confirmed?'<span style="font-size:8px;opacity:.5;margin-left:2px">~</span>':''}<span class="bs" style="margin-left:auto">${sc?(isHome?sc.home:sc.away):''}</span></div>${lblHtml}</div>`;
@@ -856,8 +858,10 @@ function renderBracket(){
       const r=resolveSlot(s);
       const lbl=slotLabelLocal(s);
       const score=sc_ko?(isHome?sc_ko.home:sc_ko.away):null;
-      const isWin=sc_ko?(isHome?sc_ko.home>sc_ko.away:sc_ko.away>sc_ko.home):false;
-      const isLose=sc_ko?(isHome?sc_ko.home<sc_ko.away:sc_ko.away<sc_ko.home):false;
+      const homeWins=sc_ko&&(sc_ko.home>sc_ko.away||sc_ko.pen==='home');
+      const awayWins=sc_ko&&(sc_ko.away>sc_ko.home||sc_ko.pen==='away');
+      const isWin=sc_ko?(isHome?homeWins:awayWins):false;
+      const isLose=sc_ko?(isHome?awayWins:homeWins):false;
       if(r){
         const wStyle=isWin?'border-left:3px solid #00D25A;background:rgba(0,210,90,.10);'
                     :isLose?'border-left:3px solid transparent;opacity:.38;':'';
