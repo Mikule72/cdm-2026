@@ -1186,7 +1186,7 @@ function refreshAll(){
       saveScores();
     }
     apiDone=true;
-  }).catch(()=>{apiDone=true;apiError=true;});
+  }).catch((err)=>{apiDone=true;apiError=true;console.error('ACTUALISER ERR',err);});
 
   // ── 8. Attend min 5s puis retour du trophée ──
   function checkDone(){
