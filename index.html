@@ -779,8 +779,10 @@ function renderBracket(){
         const awayWins=sc&&(sc.away>sc.home||sc.pen==='away');
         const wClass=sc?(isHome?homeWins:awayWins)?'win':(isHome?awayWins:homeWins)?'lose':''  :'';
         const projClass=r.confirmed?'':(wClass?'':' projected');
+        const isWinner=isHome?homeWins:awayWins;
+        const penBadge=sc?.pen&&isWinner?'<span style="font-size:7px;opacity:.6;letter-spacing:.5px;margin-left:3px;vertical-align:middle;font-style:normal;background:rgba(255,255,255,.1);border-radius:3px;padding:0 3px">TAB</span>':'';
         return`<div class="bt ${isFr?'fr':wClass+projClass}" style="flex-direction:column;align-items:flex-start;gap:0">
-          <div style="display:flex;align-items:center;gap:4px;width:100%">${r.flag} <span>${r.name.length>13?r.name.slice(0,13)+'…':r.name}</span>${!r.confirmed?'<span style="font-size:8px;opacity:.5;margin-left:2px">~</span>':''}<span class="bs" style="margin-left:auto">${sc?(isHome?sc.home:sc.away):''}</span></div>${lblHtml}</div>`;
+          <div style="display:flex;align-items:center;gap:4px;width:100%">${r.flag} <span>${r.name.length>13?r.name.slice(0,13)+'…':r.name}</span>${penBadge}${!r.confirmed?'<span style="font-size:8px;opacity:.5;margin-left:2px">~</span>':''}<span class="bs" style="margin-left:auto">${sc?(isHome?sc.home:sc.away):''}</span></div>${lblHtml}</div>`;
       }
       return`<div class="bt tbd">${lbl||fmtSlot(s)}</div>`;
     }
@@ -867,7 +869,7 @@ function renderBracket(){
                     :isLose?'border-left:3px solid transparent;opacity:.38;':'';
         const scStyle=isWin?'color:#00D25A;font-weight:700;':isLose?'':'';
         return`<div class="bm-team" style="${wStyle}">
-          <div class="name ${isFr?'fr':''}" style="${isLose?'text-decoration:line-through':''}">${r.flag} ${r.name.length>16?r.name.slice(0,16)+'…':r.name}${!r.confirmed?'<span style="opacity:.4;font-size:9px;margin-left:2px">~</span>':''}</div>
+          <div class="name ${isFr?'fr':''}" style="${isLose?'text-decoration:line-through':''}">${r.flag} ${r.name.length>16?r.name.slice(0,16)+'…':r.name}${sc_ko?.pen&&isWin?'<span style="font-size:7px;opacity:.6;letter-spacing:.5px;margin-left:3px;background:rgba(255,255,255,.1);border-radius:3px;padding:0 3px">TAB</span>':''}${!r.confirmed?'<span style="opacity:.4;font-size:9px;margin-left:2px">~</span>':''}</div>
           <div class="sc ${score===null?'tbd':''}" style="${scStyle}">${score!==null?score:'–'}</div>
         </div>${lbl?`<div class="bm-slot">${lbl}</div>`:''}`;
       }
