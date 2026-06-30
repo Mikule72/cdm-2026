@@ -1150,13 +1150,13 @@ function refreshAll(){
   fetch(apiUrl).then(r=>r.json()).then(data=>{
     if(data.ok&&data.matches){
       const tmMap=buildTeamMatchMap();
-      // Map équipe → {mid, isHome} pour les 16es identifiables par nom d'équipe
+      // Map équipe → {mid, isOurHome} pour TOUS les rounds éliminatoires
       const koMap={};
-      R32.forEach(r=>{
-        const mid=ML[r.id];
-        const hR=resolveSlot(r.home),aR=resolveSlot(r.away);
-        if(hR)koMap[hR.name]={mid,isHome:true};
-        if(aR)koMap[aR.name]={mid,isHome:false};
+      Object.entries(ML).forEach(([slotId,mid])=>{
+        const sm=SM[slotId];if(!sm)return;
+        const hR=resolveSlot(sm.home),aR=resolveSlot(sm.away);
+        if(hR&&hR.confirmed&&!koMap[hR.name])koMap[hR.name]={mid,isOurHome:true};
+        if(aR&&aR.confirmed&&!koMap[aR.name])koMap[aR.name]={mid,isOurHome:false};
       });
       data.matches.forEach(m=>{
         if(!m.finished||m.homeScore===null)return;
@@ -1164,18 +1164,16 @@ function refreshAll(){
         const a=ESPN_MAP[m.awayTeam]||m.awayTeam;
         const entry=tmMap[h]?.[a];
         if(entry){
-          // Match de groupe
-          const {key,swapped}=entry;
-          const hs=swapped?m.awayScore:m.homeScore,as_=swapped?m.homeScore:m.awayScore;
-          const ex=scores[key];
-          if(!ex||ex.home!==hs||ex.away!==as_){scores[key]={home:hs,away:as_};newKeys.push(key);}
+          // Match de groupe — ignoré (poules terminées)
         } else {
-          // Match éliminatoire — identifier par le nom de l'équipe home ou away
+          // Match éliminatoire
           const koH=koMap[h],koA=koMap[a];
           const ko=koH||koA;if(!ko)return;
           const mid=ko.mid;
-          // koH.isHome=true signifie que h est l'équipe "home" dans notre bracket
-          const hs=koH?m.homeScore:m.awayScore,as_=koH?m.awayScore:m.homeScore;
+          // Déterminer qui est "home" dans notre bracket
+          const espnHomeIsOurHome=koH?koH.isOurHome:!koA.isOurHome;
+          const hs=espnHomeIsOurHome?m.homeScore:m.awayScore;
+          const as_=espnHomeIsOurHome?m.awayScore:m.homeScore;
           const key='ko_'+mid;
           const ex=scores[key];
           if(!ex||ex.home!==hs||ex.away!==as_){scores[key]={home:hs,away:as_};newKeys.push(key);}
