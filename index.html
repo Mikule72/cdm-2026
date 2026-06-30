@@ -527,8 +527,10 @@ const PRELOADED={
   "L_3":{home:1,away:0},   // Croatie 1-0 Panama
   // L_4 (Angleterre vs Panama) et L_5 (Croatie vs Ghana) → ESPN via ACTUALISER
   // ── Phases éliminatoires — résultats confirmés ──
-  "ko_M73":{home:0,away:1},   // Afrique du Sud 0-1 Canada (28/06)
-  "ko_M76":{home:2,away:1},   // Brésil 2-1 Japon (29/06)
+  "ko_M73":{home:0,away:1},              // Afrique du Sud 0-1 Canada (28/06)
+  "ko_M74":{home:1,away:1,pen:'away'},   // Allemagne 1-1 Paraguay → Paraguay TAB (29/06)
+  "ko_M75":{home:1,away:1,pen:'away'},   // Pays-Bas 1-1 Maroc → Maroc TAB (29/06)
+  "ko_M76":{home:2,away:1},              // Brésil 2-1 Japon (29/06)
 };
 
 // France match J3: Norway is HOME (idx 3) vs France (idx 0) → [3,0] in GROUP_MATCHES I_4
@@ -1152,7 +1154,8 @@ function refreshAll(){
 
   fetch(apiUrl).then(r=>r.json()).then(data=>{
     if(data.ok&&data.matches){
-      // Construire la map équipe→{mid,isOurHome} pour tous les rounds KO
+      // Construire la map équipe→{mid,isOurHome} depuis R32 (variable globale)
+      // Note: SM est local à renderBracket(), on ne peut pas l'utiliser ici
       const koMap={};
       R32.forEach(r=>{
         const mid=ML[r.id];
@@ -1160,12 +1163,30 @@ function refreshAll(){
         if(hR&&hR.confirmed&&!koMap[hR.name])koMap[hR.name]={mid,isOurHome:true};
         if(aR&&aR.confirmed&&!koMap[aR.name])koMap[aR.name]={mid,isOurHome:false};
       });
-      ['r16_L1','r16_L2','r16_L3','r16_L4','r16_R1','r16_R2','r16_R3','r16_R4',
-       'qf_L1','qf_L2','qf_R1','qf_R2','sf_L','sf_R','final'].forEach(sid=>{
-        const mid=ML[sid],sm=SM[sid];if(!mid||!sm)return;
-        const hR=resolveSlot(sm.home),aR=resolveSlot(sm.away);
-        if(hR&&hR.confirmed&&!koMap[hR.name])koMap[hR.name]={mid,isOurHome:true};
-        if(aR&&aR.confirmed&&!koMap[aR.name])koMap[aR.name]={mid,isOurHome:false};
+      // Pour R16+: chercher les équipes connues via les scores déjà stockés
+      const KO_SLOTS=[
+        {sid:'r16_L1',mid:'M89',hSrc:'r32_3',aSrc:'r32_4'},
+        {sid:'r16_L2',mid:'M90',hSrc:'r32_1',aSrc:'r32_2'},
+        {sid:'r16_L3',mid:'M94',hSrc:'r32_8',aSrc:'r32_7'},
+        {sid:'r16_L4',mid:'M93',hSrc:'r32_6',aSrc:'r32_5'},
+        {sid:'r16_R1',mid:'M91',hSrc:'r32_9',aSrc:'r32_10'},
+        {sid:'r16_R2',mid:'M92',hSrc:'r32_11',aSrc:'r32_12'},
+        {sid:'r16_R3',mid:'M96',hSrc:'r32_15',aSrc:'r32_16'},
+        {sid:'r16_R4',mid:'M95',hSrc:'r32_14',aSrc:'r32_13'},
+      ];
+      KO_SLOTS.forEach(({mid,hSrc,aSrc})=>{
+        // Trouver les vainqueurs des 32es pour les mettre dans le koMap
+        const getWinnerName=(r32id)=>{
+          const mn=ML[r32id];if(!mn)return null;
+          const sc=scores['ko_'+mn];if(!sc)return null;
+          const r=R32.find(x=>x.id===r32id);if(!r)return null;
+          if(sc.home>sc.away||sc.pen==='home'){const hR=resolveSlot(r.home);return hR?hR.name:null;}
+          if(sc.away>sc.home||sc.pen==='away'){const aR=resolveSlot(r.away);return aR?aR.name:null;}
+          return null;
+        };
+        const hw=getWinnerName(hSrc),aw=getWinnerName(aSrc);
+        if(hw&&!koMap[hw])koMap[hw]={mid,isOurHome:true};
+        if(aw&&!koMap[aw])koMap[aw]={mid,isOurHome:false};
       });
       data.matches.forEach(m=>{
         if(!m.finished||m.homeScore===null)return;
